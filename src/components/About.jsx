@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
-export default function About({ isDark }) {
+export default function About() {
+  const { isDark } = useTheme();
+
   return (
     <section id="about" className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
       <motion.div 
@@ -40,9 +43,9 @@ export default function About({ isDark }) {
             className="flex justify-center"
           >
             <img
-              src="https://via.placeholder.com/400"
+              src="src/images/headshot.png"
               alt="Profile"
-              className="rounded-lg shadow-lg w-full max-w-md"
+              className="rounded-3xl shadow-lg w-full max-w-md"
             />
           </motion.div>
         </div>

@@ -8,8 +8,9 @@ export default function ThemeToggle() {
   return (
     <motion.button
       onClick={toggleTheme}
-      className="fixed top-6 right-6 z-50 p-2 rounded-full bg-baby_powder/10 backdrop-blur-sm
-        hover:bg-baby_powder/20 transition-colors"
+      className={`fixed top-6 right-6 z-50 p-3 rounded-full backdrop-blur-sm shadow-lg
+        transition-colors duration-300
+        ${isDark ? 'bg-hunter_green/10 hover:bg-hunter_green/20' : 'bg-baby_powder/10 hover:bg-baby_powder/20'}`}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
     >
