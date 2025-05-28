@@ -10,12 +10,17 @@ export function ThemeProvider({ children }) {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       setIsDark(true);
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
     }
   }, []);
 
   const toggleTheme = () => {
     setIsDark(!isDark);
-    localStorage.setItem('theme', !isDark ? 'dark' : 'light');
+    const newTheme = !isDark ? 'dark' : 'light';
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
   };
 
   return (

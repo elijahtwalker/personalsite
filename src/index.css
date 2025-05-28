@@ -8,16 +8,23 @@
   html {
     scroll-behavior: smooth;
     font-family: 'EB Garamond', serif;
+    @apply transition-colors duration-300;
+  }
+  
+  html[data-theme='dark'] {
+    @apply bg-eerie_black;
+  }
+
+  html[data-theme='light'] {
     @apply bg-yinmn_blue;
-    overflow-x: hidden;
   }
   
   body {
-    @apply antialiased bg-yinmn_blue min-h-screen overflow-x-hidden;
+    @apply antialiased min-h-screen overflow-x-hidden transition-colors duration-300;
   }
 
   #root {
-    @apply bg-yinmn_blue min-h-screen overflow-x-hidden;
+    @apply min-h-screen overflow-x-hidden transition-colors duration-300;
   }
 }
 
