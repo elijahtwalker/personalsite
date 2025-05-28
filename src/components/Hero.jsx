@@ -52,11 +52,11 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col leading-none"
           >
-            <span className={`text-[6rem] sm:text-[8rem] md:text-[10rem] lg:text-[15rem] font-bold tracking-tighter transition-colors duration-300
+            <span className={`text-[5rem] sm:text-[8rem] md:text-[10rem] lg:text-[15rem] font-bold tracking-tighter transition-colors duration-300
               ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
               Elijah
             </span>
-            <span className={`text-[6rem] sm:text-[8rem] md:text-[10rem] lg:text-[15rem] font-bold tracking-tighter -mt-8 sm:-mt-12 md:-mt-14 lg:-mt-16 transition-colors duration-300
+            <span className={`text-[5rem] sm:text-[8rem] md:text-[10rem] lg:text-[15rem] font-bold tracking-tighter -mt-4 sm:-mt-8 md:-mt-12 lg:-mt-16 transition-colors duration-300
               ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
               Walker
             </span>
