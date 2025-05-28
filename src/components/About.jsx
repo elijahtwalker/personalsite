@@ -43,7 +43,7 @@ export default function About() {
             className="flex justify-center"
           >
             <img
-              src="/images/headshot.JPG"
+              src="/images/headshotSquare.JPG"
               alt="Profile"
               className="rounded-3xl shadow-lg w-full max-w-md"
             />
