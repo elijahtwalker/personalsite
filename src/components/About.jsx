@@ -1,18 +1,16 @@
 import { motion } from 'framer-motion';
 
-export default function About() {
+export default function About({ isDark }) {
   return (
-    <section id="about" className="py-20 bg-gray-50 px-4">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-3xl font-bold mb-12 text-center"
-        >
-          About Me
-        </motion.h2>
+    <section id="about" className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className={`max-w-6xl mx-auto rounded-3xl p-8 shadow-xl backdrop-blur-sm transition-colors duration-300
+          ${isDark ? 'bg-eerie_black/90' : 'bg-baby_powder/10'}`}
+      >
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -21,12 +19,14 @@ export default function About() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="space-y-6"
           >
-            <p className="text-lg text-gray-600">
+            <p className={`text-lg transition-colors duration-300
+              ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
               Hi there! I'm a passionate software engineer with a love for creating
               elegant solutions to complex problems. I specialize in full-stack
               development and have a keen interest in emerging technologies.
             </p>
-            <p className="text-lg text-gray-600">
+            <p className={`text-lg transition-colors duration-300
+              ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
               When I'm not coding, you can find me exploring new technologies,
               contributing to open-source projects, or sharing my knowledge with
               the developer community.
@@ -46,7 +46,7 @@ export default function About() {
             />
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 } 
