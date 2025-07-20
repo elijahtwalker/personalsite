@@ -3,11 +3,23 @@ import { Link } from 'react-scroll';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useMouseParallax } from '../hooks/useMouseParallax';
 import { useTheme } from '../context/ThemeContext';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 export default function Hero() {
   const mousePosition = useMouseParallax(10);
   const { isDark } = useTheme();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Handle scroll detection
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsScrolled(scrollTop > 50); // Hide after 50px of scroll
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Create bubbles with static positions using useMemo
   const bubbles = useMemo(() => Array.from({ length: 50 }, (_, i) => ({
@@ -113,35 +125,36 @@ export default function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ 
-          opacity: 1,
-          y: 0,
-          x: mousePosition.x * 0.3,
-        }}
-        transition={{ 
-          duration: 0.8, 
-          delay: 1,
-          repeat: Infinity,
-          repeatType: "reverse",
-          repeatDelay: 0.5
-        }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer z-30"
-      >
-        <Link
-          to="about"
-          spy={true}
-          smooth={true}
-          offset={-64}
-          duration={500}
-          className={`flex flex-col items-center transition-colors duration-300
-            ${isDark ? 'text-hunter_green hover:text-hunter_green/80' : 'text-baby_powder hover:text-baby_powder/80'}`}
+      {!isScrolled && (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ 
+            opacity: 1,
+            y: 0,
+            x: mousePosition.x * 0.3,
+          }}
+          transition={{ 
+            duration: 0.8, 
+            delay: 1,
+            repeat: Infinity,
+            repeatType: "reverse",
+            repeatDelay: 0.5
+          }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer z-30"
         >
-          <span className="text-sm mb-2">Scroll Down</span>
-          <ChevronDownIcon className="h-6 w-6" />
-        </Link>
-      </motion.div>
+          <Link
+            to="about"
+            spy={true}
+            smooth={true}
+            offset={-64}
+            duration={500}
+            className={`flex flex-col items-center transition-colors duration-300
+              ${isDark ? 'text-hunter_green hover:text-hunter_green/80' : 'text-baby_powder hover:text-baby_powder/80'}`}
+          >
+            <ChevronDownIcon className="h-6 w-6" />
+          </Link>
+        </motion.div>
+      )}
     </section>
   );
 } 
