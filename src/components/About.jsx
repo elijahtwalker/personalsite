@@ -58,7 +58,7 @@ export default function About() {
               <div className="flex-shrink-0">
                 <div className="relative">
                   <img
-                    src="../../public/images/headshot.JPG"
+                    src="..//images/headshot.JPG"
                     alt="Elijah Walker"
                     className="w-48 h-48 md:w-56 md:h-56 rounded-full object-cover shadow-lg border-4 transition-all duration-300 hover:scale-105"
                     style={{
