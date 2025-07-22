@@ -196,7 +196,7 @@ export default function About() {
                 </p>
                 <p className={`mt-2 transition-colors duration-300
                   ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
-                  Visualization of multidimensional objects utilizing heuristic flight algorithms on a Tello drone
+                  Visualization of multidimensional objects utilizing heuristic flight algorithms on a Tello drone.
                 </p>
               </div>
               <div className={`p-3 rounded-lg transition-colors duration-300
