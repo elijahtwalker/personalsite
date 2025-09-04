@@ -37,7 +37,7 @@ export default function About() {
                   ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
                   <li className="flex items-start">
                     <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
-                    <span>Software Engineering Summer Analyst @ Goldman Sachs</span>
+                    <span>Former Software Engineering Summer Analyst @ Goldman Sachs</span>
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
