@@ -118,6 +118,7 @@ export default function About() {
                   ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
                   • Automated 10,000+ system requirement updates through an Azure DevOps work item management system to streamline project management processes by reducing manual data synchronization checks by 80%.
                   <br></br>• Performed 20,000+ comparisons between DOORS and ADO in Python utilizing Azure Rest API, DXL, and WIQL for efficient queries to accurately synchronize requirements for our embedded software team through 5-stage pipeline.
+                  <br></br>• Built 5 stage pipeline through Azure pipelines to deploy the work item management system using YAML and producing multi-page PDF artifacts
                 </p>
               </div>
               <div className={`p-3 rounded-lg transition-colors duration-300
