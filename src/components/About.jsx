@@ -99,7 +99,9 @@ export default function About() {
                 </p>
                 <p className={`mt-2 transition-colors duration-300 text-left
                   ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
-                  • GBM Public FICC & Equities Engineering
+                  • Designed and implemented a React and Redux interface for portfolio exposure uploads while integrating new data pre-processing procedures based in the downstream workflow pricing service reducing upload times by 80%.
+                   <br></br>• Expanded portfolio upload services within a Python developer API through an object-oriented framework
+                   <br></br>• Introduced new data quality checks within REST-Based Java Microservices built on Vert.X and with Elastic Search for an additional risk report metric amalgamated into the React and Redux frontend.
                 </p>
               </div>
               <div className={`p-3 rounded-lg transition-colors duration-300
