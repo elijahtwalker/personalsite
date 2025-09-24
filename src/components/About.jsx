@@ -95,7 +95,7 @@ export default function About() {
                 </h4>
                 <p className={`text-sm opacity-80 transition-colors duration-300 text-left
                   ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
-                  Goldman Sachs • June 2025 - Present
+                  Goldman Sachs • June 2025 - August 2025
                 </p>
                 <p className={`mt-2 transition-colors duration-300 text-left
                   ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
