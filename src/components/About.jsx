@@ -98,7 +98,7 @@ export default function About() {
                     : 'bg-baby_powder/20 border border-yinmn_blue/30 text-baby_powder hover:bg-baby_powder/30'
                   }`}
               >
-                Resume
+                Résumé
               </a>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
