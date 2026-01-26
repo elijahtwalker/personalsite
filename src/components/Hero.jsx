@@ -69,7 +69,7 @@ export default function Hero() {
               Elijah
             </span>
             <span className={`text-[5rem] sm:text-[8rem] md:text-[10rem] lg:text-[15rem] font-bold tracking-tighter -mt-4 sm:-mt-8 md:-mt-12 lg:-mt-16 transition-colors duration-300
-              ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+              ${isDark ? 'text-mint_green drop-shadow-[0_0_8px_rgba(159,189,143,0.5)]' : 'text-baby_powder'}`}>
               Walker
             </span>
           </motion.div>

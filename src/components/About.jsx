@@ -430,10 +430,10 @@ export default function About() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className={`max-w-6xl mx-auto rounded-3xl p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 liquid-glass relative
+        className={`max-w-6xl mx-auto rounded-3xl p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative
           ${isDark 
             ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(159,189,143,0.1)]' 
-            : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/30 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
+            : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
           }`}
         style={{
           backdropFilter: 'blur(20px) saturate(180%)',
@@ -441,8 +441,6 @@ export default function About() {
           boxShadow: isDark 
             ? '0 8px 32px 0 rgba(159, 189, 143, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)'
             : '0 8px 32px 0 rgba(48, 87, 122, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
-          '--liquid-color': isDark ? 'rgba(159, 189, 143, 0.08)' : 'rgba(48, 87, 122, 0.1)',
-          '--liquid-color-light': isDark ? 'rgba(159, 189, 143, 0.04)' : 'rgba(48, 87, 122, 0.06)',
         }}
       >
         {/* Navigation Tabs */}
