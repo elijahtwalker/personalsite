@@ -65,11 +65,11 @@ export default function Hero() {
             className="flex flex-col leading-none"
           >
             <span className={`text-[5rem] sm:text-[8rem] md:text-[10rem] lg:text-[15rem] font-bold tracking-tighter transition-colors duration-300
-              ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
+              ${isDark ? 'text-mint_green drop-shadow-[0_0_8px_rgba(159,189,143,0.5)]' : 'text-baby_powder'}`}>
               Elijah
             </span>
             <span className={`text-[5rem] sm:text-[8rem] md:text-[10rem] lg:text-[15rem] font-bold tracking-tighter -mt-4 sm:-mt-8 md:-mt-12 lg:-mt-16 transition-colors duration-300
-              ${isDark ? 'text-hunter_green' : 'text-baby_powder'}`}>
+              ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
               Walker
             </span>
           </motion.div>
@@ -82,7 +82,7 @@ export default function Hero() {
           <motion.div
             key={bubble.id}
             className={`absolute rounded-full transition-colors duration-300 backdrop-blur-sm
-              ${isDark ? 'bg-hunter_green' : 'bg-baby_powder'}`}
+              ${isDark ? 'bg-mint_green/40' : 'bg-baby_powder'}`}
             style={{
               width: bubble.size,
               height: bubble.size,
@@ -149,7 +149,7 @@ export default function Hero() {
             offset={-64}
             duration={500}
             className={`flex flex-col items-center transition-colors duration-300
-              ${isDark ? 'text-hunter_green hover:text-hunter_green/80' : 'text-baby_powder hover:text-baby_powder/80'}`}
+              ${isDark ? 'text-mint_green drop-shadow-[0_0_4px_rgba(159,189,143,0.6)] hover:text-mint_green/90' : 'text-baby_powder hover:text-baby_powder/80'}`}
           >
             <ChevronDownIcon className="h-6 w-6" />
           </Link>

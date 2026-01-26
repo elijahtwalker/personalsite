@@ -10,7 +10,7 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       className={`fixed top-6 right-6 z-50 p-3 rounded-full backdrop-blur-sm shadow-lg
         transition-colors duration-300
-        ${isDark ? 'bg-hunter_green/10 hover:bg-hunter_green/20' : 'bg-baby_powder/10 hover:bg-baby_powder/20'}`}
+        ${isDark ? 'bg-mint_green/20 hover:bg-mint_green/30 border border-mint_green/40' : 'bg-baby_powder/10 hover:bg-baby_powder/20'}`}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
     >
@@ -20,7 +20,7 @@ export default function ThemeToggle() {
         transition={{ duration: 0.3 }}
       >
         {isDark ? (
-          <MoonIcon className="w-6 h-6 text-hunter_green" />
+          <MoonIcon className="w-6 h-6 text-mint_green drop-shadow-[0_0_4px_rgba(159,189,143,0.5)]" />
         ) : (
           <SunIcon className="w-6 h-6 text-baby_powder" />
         )}
