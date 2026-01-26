@@ -89,8 +89,9 @@ export default function About() {
               </h3>
               <a
                 href="..//images/Resumé_Elijah_Walker.pdf"
+                alt="alt text"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-[1.02]
                   ${isDark
                     ? 'bg-dark-800 border border-mint_green/60 text-mint_green hover:bg-dark-800/80'
