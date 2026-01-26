@@ -86,7 +86,7 @@ export default function About() {
               ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
               Work Experience
             </h3>
-            <div className="space-y-3">
+            <div className="grid gap-3 md:grid-cols-2">
               <div className={`p-3 rounded-lg transition-colors duration-300
                 ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                 <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
@@ -99,9 +99,7 @@ export default function About() {
                 </p>
                 <p className={`mt-2 transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  • Designed and implemented a React and Redux interface for portfolio exposure uploads while integrating new data pre-processing procedures based in the downstream workflow pricing service reducing upload times by 80%.
-                   <br></br>• Expanded portfolio upload services within a Python developer API through an object-oriented framework
-                   <br></br>• Introduced new data quality checks within REST-Based Java Microservices built on Vert.X and with Elastic Search for an additional risk report metric amalgamated into the React and Redux frontend.
+                  • Marquee Portfolio Analytics Team.
                 </p>
               </div>
               <div className={`p-3 rounded-lg transition-colors duration-300
@@ -116,9 +114,7 @@ export default function About() {
                 </p>
                 <p className={`mt-2 transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  • Automated 10,000+ system requirement updates through an Azure DevOps work item management system to streamline project management processes by reducing manual data synchronization checks by 80%.
-                  <br></br>• Performed 20,000+ comparisons between DOORS and ADO in Python utilizing Azure Rest API, DXL, and WIQL for efficient queries to accurately synchronize requirements for our embedded software team through 5-stage pipeline.
-                  <br></br>• Built 5 stage pipeline through Azure pipelines to deploy the work item management system using YAML and producing multi-page PDF artifacts
+                  • Innovation Flight Controls Software Team.
                 </p>
               </div>
               <div className={`p-3 rounded-lg transition-colors duration-300
@@ -129,12 +125,11 @@ export default function About() {
                 </h4>
                 <p className={`text-sm transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  Computer Vision & Multi-Modal Computing Lab • August 2024 - November 2024
+                  CVMC Lab • August 2024 - November 2024
                 </p>
                 <p className={`mt-2 transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  • Researched diffusion-based audio generation models incorporated with scalable interpolant transformers.
-                  <br></br>• Tailored 700+ text captions through interface developing accurate text-audio annotations for public dataset release.
+                  • Stable Diffusion Model Development.
                 </p>
               </div>
               <div className={`p-3 rounded-lg transition-colors duration-300
@@ -149,8 +144,7 @@ export default function About() {
                 </p>
                 <p className={`mt-2 transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  • Facilitated learning for students to understand fundamentals of Calculus I, II, & III in a collaborative environment.
-                  <br></br>• Lead weekly sessions for 16 students examining challenging concepts and building meaningful community.
+                  • Multivariable and Advanced Calculus Tutoring.
                 </p>
               </div>
             </div>
@@ -285,15 +279,15 @@ export default function About() {
                 ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                 <h4 className={`font-semibold text-lg transition-colors duration-300
                   ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Vice President
+                  President
                 </h4>
                 <p className={`text-sm transition-colors duration-300
                   ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  The Association of Computing Machinery • December 2024 - Present
+                  The Association of Computing Machinery @ UTD • December 2024 - Present
                 </p>
                 <p className={`mt-2 transition-colors duration-300
                   ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  • Lead the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 150+ officers at the forefront of innovation and intellectual curiosity.
+                  • Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 180+ officers at the forefront of innovation and intellectual curiosity.
                   <br></br>• Supporting 4 semester-long programs with 200+ participants, 8 industry sponsors, and 20+ large scale events such as HackUTD, North America's Largest 24-Hour Hackathon.
                 </p>
               </div>
@@ -305,12 +299,12 @@ export default function About() {
                 </h4>
                 <p className={`text-sm transition-colors duration-300
                   ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  Alpha Kappa Psi Mu Rho Chapter • May 2025 - Present
+                  Alpha Kappa Psi Mu Rho Chapter • May 2025 - December 2025
                 </p>
                 <p className={`mt-2 transition-colors duration-300
                   ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  • Leading the pledge process of the largest co-ed business fraternity at UT Dallas with 100+ members. Spearheading the rush process with 8 events and 150+ participants.
-                  <br></br>• Developing content and programs specifically implemented to guide underclassmen through their early professional career through refined technical projects and individualized career plans.
+                  • Lead the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheading the rush process with 8 events and 300+ participants.
+                  <br></br>• Developed content and programs specifically implemented to guide 26 underclassmen through their early professional career through refined technical projects and individualized career plans.
                 </p>
               </div>
               <div className={`p-3 rounded-lg transition-colors duration-300
@@ -326,7 +320,7 @@ export default function About() {
                 <p className={`mt-2 transition-colors duration-300
                   ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
                   • Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.
-                  <br></br>• Spearheading research teams studying chemotherapy imaging with GANs, Pneumonia detection with SAM2, training a CLAP model using synthetic music, and social presence in multi-agent VR discourse
+                  <br></br>• Spearheaded research teams studying chemotherapy imaging with GANs, Pneumonia detection with SAM2, training a CLAP model using synthetic music, and social presence in multi-agent VR discourse
                 </p>
               </div>
             </div>
