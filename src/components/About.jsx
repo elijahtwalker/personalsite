@@ -82,12 +82,26 @@ export default function About() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="space-y-4"
           >
-            <h3 className={`text-2xl font-bold mb-3 transition-colors duration-300
-              ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-              Work Experience
-            </h3>
+            <div className="flex items-baseline justify-between gap-4 mb-2">
+              <h3 className={`text-2xl font-bold transition-colors duration-300
+                ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                Work Experience
+              </h3>
+              <a
+                href="/src/images/Resumé_Elijah_Walker.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-[1.02]
+                  ${isDark
+                    ? 'bg-dark-800 border border-mint_green/60 text-mint_green hover:bg-dark-800/80'
+                    : 'bg-baby_powder/20 border border-yinmn_blue/30 text-baby_powder hover:bg-baby_powder/30'
+                  }`}
+              >
+                Resume
+              </a>
+            </div>
             <div className="grid gap-3 md:grid-cols-2">
-              <div className={`p-3 rounded-lg transition-colors duration-300
+              <div className={`p-2 rounded-lg transition-colors duration-300
                 ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                 <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -102,7 +116,7 @@ export default function About() {
                   • Marquee Portfolio Analytics Team.
                 </p>
               </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
+              <div className={`p-2 rounded-lg transition-colors duration-300
                 ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                 <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -117,7 +131,7 @@ export default function About() {
                   • Innovation Flight Controls Software Team.
                 </p>
               </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
+              <div className={`p-2 rounded-lg transition-colors duration-300
                 ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                 <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -132,7 +146,7 @@ export default function About() {
                   • Stable Diffusion Model Development.
                 </p>
               </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
+              <div className={`p-2 rounded-lg transition-colors duration-300
                 ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                 <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
                   ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
