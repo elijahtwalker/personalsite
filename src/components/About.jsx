@@ -88,7 +88,7 @@ export default function About() {
                 Work Experience
               </h3>
               <a
-                href="/src/images/Resumé_Elijah_Walker.pdf"
+                href="..//images/Resumé_Elijah_Walker.pdf"
                 target="_blank"
                 rel="noreferrer"
                 className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-[1.02]
