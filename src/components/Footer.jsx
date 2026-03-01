@@ -6,6 +6,35 @@ export default function Footer() {
   return (
     <footer className={`py-12 px-4 transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
       <div className="max-w-6xl mx-auto">
+        <div className="flex justify-center items-center gap-2 mb-8">
+          <a
+            href="https://cs.utdring.com/#elijahwalker.me?nav=prev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`text-lg transition-colors duration-300 ${isDark ? 'text-mint_green hover:text-mint_green/80' : 'text-baby_powder hover:text-mint_green/70'}`}
+          >
+            ←
+          </a>
+          <a
+            href="https://cs.utdring.com/#elijahwalker.me"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://cs.utdring.com/icon.white.svg"
+              alt="CS Webring"
+              className="w-6 h-auto opacity-80 hover:opacity-60 transition-opacity duration-300"
+            />
+          </a>
+          <a
+            href="https://cs.utdring.com/#elijahwalker.me?nav=next"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`text-lg transition-colors duration-300 ${isDark ? 'text-mint_green hover:text-mint_green/80' : 'text-baby_powder hover:text-mint_green/70'}`}
+          >
+            →
+          </a>
+        </div>
         <div className="flex justify-center space-x-8">
           <a
             href="https://www.linkedin.com/in/elijahtruthwalker/"
