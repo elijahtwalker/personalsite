@@ -34,10 +34,10 @@ export default function About() {
   ];
 
   const experienceItems = [
-    { title: 'Software Engineering Intern', subtitle: 'Goldman Sachs • June 2025 - August 2025', description: '• Marquee Portfolio Analytics Team.' },
-    { title: 'Software Engineering Intern', subtitle: 'Bell Flight • June 2024 - August 2024', description: '• Innovation Flight Controls Software Team.' },
-    { title: 'Research Assistant', subtitle: 'CVMC Lab • August 2024 - November 2024', description: '• Stable Diffusion Model Development.' },
-    { title: 'Peer-Led Team Learning Tutor', subtitle: 'The University of Texas at Dallas • August 2024 - May 2025', description: '• Multivariable and Advanced Calculus Tutoring.' },
+    { title: 'Software Engineering Intern', subtitle: 'Goldman Sachs • June 2025 - August 2025', description: '• Marquee Portfolio Analytics Team working with React, Redux, Python, Java, and Vert.X.' },
+    { title: 'Software Engineering Intern', subtitle: 'Bell Flight • June 2024 - August 2024', description: '• Innovation Flight Controls Software Team working with Python, DXL, and Azure DevOps.' },
+    { title: 'Research Assistant', subtitle: 'CVMC Lab • August 2024 - November 2024', description: '• Stable Diffusion Model Development for Enhanced Audio Synthesis for Video Generation.' },
+    { title: 'Peer-Led Team Learning Tutor', subtitle: 'The University of Texas at Dallas • August 2024 - May 2025', description: '• Multivariable and Advanced Calculus Tutoring for 30+ students in a Weekly Team Environment.' },
   ];
 
   const projectItems = [
@@ -54,24 +54,21 @@ export default function About() {
       title: 'President',
       subtitle: 'The Association of Computing Machinery @ UTD • December 2024 - Present',
       bullets: [
-        'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 180+ officers at the forefront of innovation and intellectual curiosity.',
-        'Supporting 4 semester-long programs with 200+ participants, 8 industry sponsors, and 20+ large scale events such as HackUTD, North America\'s Largest 24-Hour Hackathon.'
+        'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 180+ officers at the forefront of innovation and intellectual curiosity.'
       ]
     },
     {
       title: 'Vice President of Membership',
       subtitle: 'Alpha Kappa Psi Mu Rho Chapter • May 2025 - December 2025',
       bullets: [
-        'Lead the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheading the rush process with 8 events and 300+ participants.',
-        'Developed content and programs specifically implemented to guide 26 underclassmen through their early professional career through refined technical projects and individualized career plans.'
+        'Lead the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheading the rush process with 8 events and 300+ participants.'
       ]
     },
     {
       title: 'Director of Research',
       subtitle: 'The Association of Computing Machinery @ UTD • May 2024 - December 2024',
       bullets: [
-        'Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.',
-        'Spearheaded research teams studying chemotherapy imaging with GANs, Pneumonia detection with SAM2, training a CLAP model using synthetic music, and social presence in multi-agent VR discourse'
+        'Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.'
       ]
     },
   ];
@@ -85,7 +82,7 @@ export default function About() {
     { title: 'Calisthenics', description: 'Just Moving in General.' },
   ];
 
-  const ITEMS_PER_PAGE = { experience: 2, projects: 2, involvement: 1, interests: 2 };
+  const ITEMS_PER_PAGE = { experience: 2, projects: 2, involvement: 1, interests: 3 };
 
   const paginate = (items, perPage) => {
     const result = [];
@@ -197,7 +194,7 @@ export default function About() {
           >
             <div className="grid gap-3 md:grid-cols-2">
               {currentPageItems.map((item, i) => (
-                <div key={i} className={`p-2 rounded-lg transition-colors duration-300
+                <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
                   ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -230,7 +227,7 @@ export default function About() {
           >
             <div className="grid gap-3 md:grid-cols-2">
               {currentPageItems.map((item, i) => (
-                <div key={i} className={`p-3 rounded-lg transition-colors duration-300
+                <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
                   ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -299,9 +296,9 @@ export default function About() {
             exit="exit"
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid gap-3 md:grid-cols-3">
               {currentPageItems.map((item, i) => (
-                <div key={i} className={`p-3 rounded-lg transition-colors duration-300
+                <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[100px]
                   ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -329,7 +326,7 @@ export default function About() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className={`max-w-6xl mx-auto rounded-3xl p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative flex flex-col h-[530px] md:h-[350px]
+        className={`max-w-6xl mx-auto rounded-3xl p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative flex flex-col h-auto md:h-[350px]
           ${isDark
             ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(159,189,143,0.1)]'
             : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
