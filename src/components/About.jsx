@@ -1,10 +1,29 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 export default function About() {
   const { isDark } = useTheme();
   const [activeTab, setActiveTab] = useState('about');
+  const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState(1);
+
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+  const springConfig = { stiffness: 300, damping: 20 };
+  const rotateX = useSpring(useTransform(mouseY, [0, 1], [10, -10]), springConfig);
+  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-10, 10]), springConfig);
+
+  const handlePhotoMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left) / rect.width);
+    mouseY.set((e.clientY - rect.top) / rect.height);
+  };
+
+  const handlePhotoMouseLeave = () => {
+    mouseX.set(0.5);
+    mouseY.set(0.5);
+  };
 
   const tabs = [
     { id: 'about', label: 'About' },
@@ -14,20 +33,110 @@ export default function About() {
     { id: 'interests', label: 'Interests' }
   ];
 
+  const experienceItems = [
+    { title: 'Software Engineering Intern', subtitle: 'Goldman Sachs • June 2025 - August 2025', description: '• Marquee Portfolio Analytics Team.' },
+    { title: 'Software Engineering Intern', subtitle: 'Bell Flight • June 2024 - August 2024', description: '• Innovation Flight Controls Software Team.' },
+    { title: 'Research Assistant', subtitle: 'CVMC Lab • August 2024 - November 2024', description: '• Stable Diffusion Model Development.' },
+    { title: 'Peer-Led Team Learning Tutor', subtitle: 'The University of Texas at Dallas • August 2024 - May 2025', description: '• Multivariable and Advanced Calculus Tutoring.' },
+  ];
+
+  const projectItems = [
+    { title: 'Stilus', subtitle: 'React, TypeScript, Tailwind CSS, Python, Flask, & MongoDB', description: 'Digital wardrobe implementing TryOnDiffusion for outfit suggestions of amalgamated fashionable garments.' },
+    { title: 'Hover', subtitle: 'React, Python, Flask, & Tello API', description: 'Visualization of multidimensional objects utilizing heuristic flight algorithms on a Tello drone.' },
+    { title: 'Aerovista', subtitle: 'Python, PyTorch, OpenCV, Tello API, & NumPy', description: 'Leveraged Mask R-CNN and RTMDet-Ins-s to enhance aerial drone SAR performance using a Tello drone.' },
+    { title: 'Ingrediate', subtitle: 'React, Python, Flask, MongoDB, Auth0, & Google Cloud API', description: 'Web application for informed recipe recommendations based on ingredients in their digital pantry.' },
+    { title: 'Insight Invest', subtitle: 'React, Python, Flask, & Quiver API', description: "Interactive dashboard to analyze congressional respresentatives' investment patterns and news." },
+    { title: 'Scaffold', subtitle: 'C++, Reinforcement Learning, Unreal Engine, & Game Design', description: 'Dogfighting simulation confirming the effectiveness of PPO strategies by monitoring agent interactions.' },
+  ];
+
+  const involvementItems = [
+    {
+      title: 'President',
+      subtitle: 'The Association of Computing Machinery @ UTD • December 2024 - Present',
+      bullets: [
+        'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 180+ officers at the forefront of innovation and intellectual curiosity.',
+        'Supporting 4 semester-long programs with 200+ participants, 8 industry sponsors, and 20+ large scale events such as HackUTD, North America\'s Largest 24-Hour Hackathon.'
+      ]
+    },
+    {
+      title: 'Vice President of Membership',
+      subtitle: 'Alpha Kappa Psi Mu Rho Chapter • May 2025 - December 2025',
+      bullets: [
+        'Lead the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheading the rush process with 8 events and 300+ participants.',
+        'Developed content and programs specifically implemented to guide 26 underclassmen through their early professional career through refined technical projects and individualized career plans.'
+      ]
+    },
+    {
+      title: 'Director of Research',
+      subtitle: 'The Association of Computing Machinery @ UTD • May 2024 - December 2024',
+      bullets: [
+        'Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.',
+        'Spearheaded research teams studying chemotherapy imaging with GANs, Pneumonia detection with SAM2, training a CLAP model using synthetic music, and social presence in multi-agent VR discourse'
+      ]
+    },
+  ];
+
+  const interestItems = [
+    { title: 'Pastry Baking', description: 'Drop Cookies, Sweet Breads, & Puff Pastries.' },
+    { title: 'Reading', description: 'Murder Mysteries & Personal Development.' },
+    { title: 'Dance', description: 'Modern, Hip-Hop, & Breaking.' },
+    { title: 'Learning Spanish', description: 'Studying Spanish Within Literature, Music, & Film.' },
+    { title: 'Graphite Sketching', description: '2D Pencil Drawings.' },
+    { title: 'Calisthenics', description: 'Just Moving in General.' },
+  ];
+
+  const ITEMS_PER_PAGE = { experience: 2, projects: 2, involvement: 1, interests: 2 };
+
+  const paginate = (items, perPage) => {
+    const result = [];
+    for (let i = 0; i < items.length; i += perPage) {
+      result.push(items.slice(i, i + perPage));
+    }
+    return result;
+  };
+
+  const getPages = () => {
+    const map = { experience: experienceItems, projects: projectItems, involvement: involvementItems, interests: interestItems };
+    if (!map[activeTab]) return [[]];
+    return paginate(map[activeTab], ITEMS_PER_PAGE[activeTab]);
+  };
+
+  const allPages = activeTab === 'about' ? [[]] : getPages();
+  const totalPages = activeTab === 'about' ? 1 : allPages.length;
+  const currentPageItems = allPages[page] || allPages[0] || [];
+
+  const handleTabChange = (tabId) => {
+    setDirection(1);
+    setPage(0);
+    setActiveTab(tabId);
+  };
+
+  const goToPage = (newPage) => {
+    setDirection(newPage > page ? 1 : -1);
+    setPage(((newPage % totalPages) + totalPages) % totalPages);
+  };
+
+  const contentVariants = {
+    enter: (dir) => ({ x: dir >= 0 ? 40 : -40, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir) => ({ x: dir >= 0 ? -40 : 40, opacity: 0 }),
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'about':
         return (
           <motion.div
             key="about"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
+            custom={direction}
+            variants={contentVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="space-y-6"
           >
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-              {/* Text Content */}
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
               <div className="flex-1 space-y-4">
                 <p className={`text-lg transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
@@ -53,36 +162,212 @@ export default function About() {
                   Interested in connecting? Say <a href="mailto:hello@elijahwalker.me" className="hover:underline">hello@elijahwalker.me</a>
                 </p>
               </div>
-              
-              {/* Profile Photo */}
-              <div className="flex-shrink-0">
-                <div className="relative">
+              <div className="flex-shrink-0" style={{ perspective: 600 }}>
+                <motion.div
+                  className="relative"
+                  style={{ rotateX, rotateY }}
+                  onMouseMove={handlePhotoMouseMove}
+                  onMouseLeave={handlePhotoMouseLeave}
+                >
                   <img
                     src="..//images/headshot.JPG"
                     alt="Elijah Walker"
-                    className="w-48 h-48 md:w-56 md:h-56 rounded-full object-cover shadow-lg border-4 transition-all duration-300 hover:scale-105"
+                    className="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover shadow-lg border-4 transition-all duration-300 hover:scale-105"
                     style={{
-                      borderColor: isDark ? '#1a1a1a' : '#355070'
+                      borderColor: isDark ? 'rgba(159, 189, 143, 0.5)' : '#355070'
                     }}
                   />
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent to-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
+                </motion.div>
               </div>
             </div>
           </motion.div>
         );
-      
+
       case 'experience':
         return (
           <motion.div
-            key="experience"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
+            key={`experience-${page}`}
+            custom={direction}
+            variants={contentVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="space-y-4"
           >
-            <div className="flex items-baseline justify-between gap-4 mb-2">
+            <div className="grid gap-3 md:grid-cols-2">
+              {currentPageItems.map((item, i) => (
+                <div key={i} className={`p-2 rounded-lg transition-colors duration-300
+                  ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
+                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                    {item.title}
+                  </h4>
+                  <p className={`text-sm transition-colors duration-300 text-left
+                    ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
+                    {item.subtitle}
+                  </p>
+                  <p className={`mt-2 transition-colors duration-300 text-left
+                    ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        );
+
+      case 'projects':
+        return (
+          <motion.div
+            key={`projects-${page}`}
+            custom={direction}
+            variants={contentVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="grid gap-3 md:grid-cols-2">
+              {currentPageItems.map((item, i) => (
+                <div key={i} className={`p-3 rounded-lg transition-colors duration-300
+                  ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  <h4 className={`font-semibold text-lg transition-colors duration-300
+                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                    {item.title}
+                  </h4>
+                  <p className={`text-sm transition-colors duration-300
+                    ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
+                    {item.subtitle}
+                  </p>
+                  <p className={`mt-2 transition-colors duration-300
+                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        );
+
+      case 'involvement':
+        return (
+          <motion.div
+            key={`involvement-${page}`}
+            custom={direction}
+            variants={contentVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="space-y-3">
+              {currentPageItems.map((item, i) => (
+                <div key={i} className={`p-3 rounded-lg transition-colors duration-300
+                  ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  <h4 className={`font-semibold text-lg transition-colors duration-300
+                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                    {item.title}
+                  </h4>
+                  <p className={`text-sm transition-colors duration-300
+                    ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
+                    {item.subtitle}
+                  </p>
+                  <p className={`mt-2 transition-colors duration-300
+                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                    {item.bullets.map((bullet, j) => (
+                      <span key={j}>
+                        {j > 0 && <br />}
+                        • {bullet}
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        );
+
+      case 'interests':
+        return (
+          <motion.div
+            key={`interests-${page}`}
+            custom={direction}
+            variants={contentVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="grid gap-3 md:grid-cols-2">
+              {currentPageItems.map((item, i) => (
+                <div key={i} className={`p-3 rounded-lg transition-colors duration-300
+                  ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  <h4 className={`font-semibold text-lg transition-colors duration-300
+                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                    {item.title}
+                  </h4>
+                  <p className={`transition-colors duration-300
+                    ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <section id="about" className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className={`max-w-6xl mx-auto rounded-3xl p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative flex flex-col h-[530px] md:h-[350px]
+          ${isDark
+            ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(159,189,143,0.1)]'
+            : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
+          }`}
+        style={{
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          boxShadow: isDark
+            ? '0 8px 32px 0 rgba(159, 189, 143, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)'
+            : '0 8px 32px 0 rgba(48, 87, 122, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
+        }}
+      >
+        {/* Navigation Tabs */}
+        <div className="flex flex-wrap justify-center gap-2 mb-6 relative z-10 flex-shrink-0">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => handleTabChange(tab.id)}
+              className={`px-5 py-1.5 rounded-lg font-medium transition-all duration-300 transform hover:scale-105
+                ${activeTab === tab.id
+                  ? isDark
+                    ? 'bg-mint_green text-eerie_black shadow-lg'
+                    : 'bg-baby_powder text-yinmn_blue shadow-lg'
+                  : isDark
+                    ? 'text-mint_green hover:bg-mint_green/20 border border-mint_green/60'
+                    : 'text-baby_powder hover:bg-baby_powder/20 border border-baby_powder/30'
+                }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 max-w-3xl mx-auto w-full relative z-10 flex flex-col min-h-0">
+          {/* Static section header */}
+          {activeTab === 'experience' && (
+            <div className="flex items-baseline justify-between gap-4 mb-3 flex-shrink-0">
               <h3 className={`text-2xl font-bold transition-colors duration-300
                 ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
                 Work Experience
@@ -101,383 +386,76 @@ export default function About() {
                 Résumé
               </a>
             </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className={`p-2 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Software Engineering Intern
-                </h4>
-                <p className={`text-sm transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  Goldman Sachs • June 2025 - August 2025
-                </p>
-                <p className={`mt-2 transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  • Marquee Portfolio Analytics Team.
-                </p>
-              </div>
-              <div className={`p-2 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Software Engineering Intern
-                </h4>
-                <p className={`text-sm transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  Bell Flight • June 2024 - August 2024
-                </p>
-                <p className={`mt-2 transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  • Innovation Flight Controls Software Team.
-                </p>
-              </div>
-              <div className={`p-2 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Research Assistant
-                </h4>
-                <p className={`text-sm transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  CVMC Lab • August 2024 - November 2024
-                </p>
-                <p className={`mt-2 transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  • Stable Diffusion Model Development.
-                </p>
-              </div>
-              <div className={`p-2 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Peer-Led Team Learning Tutor
-                </h4>
-                <p className={`text-sm transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  The University of Texas at Dallas • August 2024 - May 2025
-                </p>
-                <p className={`mt-2 transition-colors duration-300 text-left
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  • Multivariable and Advanced Calculus Tutoring.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        );
-      
-      case 'projects':
-        return (
-          <motion.div
-            key="projects"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="space-y-4"
-          >
-            <h3 className={`text-2xl font-bold mb-3 transition-colors duration-300
+          )}
+          {activeTab === 'projects' && (
+            <h3 className={`text-2xl font-bold mb-3 flex-shrink-0 transition-colors duration-300
               ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
               Technical Projects
             </h3>
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Stilus
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  React, TypeScript, Tailwind CSS, Python, Flask, & MongoDB
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Digital wardrobe implementing TryOnDiffusion for outfit suggestions of amalgamated fashionable garments.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Hover
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  React, Python, Flask, & Tello API
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Visualization of multidimensional objects utilizing heuristic flight algorithms on a Tello drone.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Aerovista
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  Python, PyTorch, OpenCV, Tello API, & NumPy
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Leveraged Mask R-CNN and RTMDet-Ins-s to enhance aerial drone SAR performance using a Tello drone.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Ingrediate
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  React, Python, Flask, MongoDB, Auth0, & Google Cloud API 
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Web application for informed recipe recommendations based on ingredients in their digital pantry. 
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Insight Invest
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  React, Python, Flask, & Quiver API 
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Interactive dashboard to analyze congressional respresentatives' investment patterns and news.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Scaffold
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  C++, Reinforcement Learning, Unreal Engine, & Game Design
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Dogfighting simulation confirming the effectiveness of PPO strategies by monitoring agent interactions.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        );
-      
-      case 'involvement':
-        return (
-          <motion.div
-            key="involvement"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="space-y-4"
-          >
-            <h3 className={`text-2xl font-bold mb-3 transition-colors duration-300
+          )}
+          {activeTab === 'involvement' && (
+            <h3 className={`text-2xl font-bold mb-3 flex-shrink-0 transition-colors duration-300
               ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
               Campus Involvement
             </h3>
-            <div className="space-y-3">
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  President
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  The Association of Computing Machinery @ UTD • December 2024 - Present
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  • Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 180+ officers at the forefront of innovation and intellectual curiosity.
-                  <br></br>• Supporting 4 semester-long programs with 200+ participants, 8 industry sponsors, and 20+ large scale events such as HackUTD, North America's Largest 24-Hour Hackathon.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Vice President of Membership
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  Alpha Kappa Psi Mu Rho Chapter • May 2025 - December 2025
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  • Lead the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheading the rush process with 8 events and 300+ participants.
-                  <br></br>• Developed content and programs specifically implemented to guide 26 underclassmen through their early professional career through refined technical projects and individualized career plans.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Director of Research
-                </h4>
-                <p className={`text-sm transition-colors duration-300
-                  ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                  The Association of Computing Machinery @ UTD • May 2024 - December 2024
-                </p>
-                <p className={`mt-2 transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  • Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.
-                  <br></br>• Spearheaded research teams studying chemotherapy imaging with GANs, Pneumonia detection with SAM2, training a CLAP model using synthetic music, and social presence in multi-agent VR discourse
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        );
-      
-      case 'interests':
-        return (
-          <motion.div
-            key="interests"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="space-y-4"
-          >
-            <h3 className={`text-2xl font-bold mb-3 transition-colors duration-300
+          )}
+          {activeTab === 'interests' && (
+            <h3 className={`text-2xl font-bold mb-3 flex-shrink-0 transition-colors duration-300
               ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
               Personal Interests
             </h3>
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Pastry Baking
-                </h4>
-                <p className={`transition-colors duration-300
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  Drop Cookies, Sweet Breads, & Puff Pastries.
-                </p>
+          )}
+
+          <div key={activeTab} className="flex-1 overflow-hidden">
+            <AnimatePresence initial={false} mode="wait" custom={direction}>
+              {renderContent()}
+            </AnimatePresence>
+          </div>
+
+          {/* Carousel Navigation */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-3 pt-3 flex-shrink-0">
+              <button
+                onClick={() => goToPage(page - 1)}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110
+                  ${isDark
+                    ? 'text-mint_green border border-mint_green/40 hover:bg-mint_green/10'
+                    : 'text-baby_powder border border-baby_powder/40 hover:bg-baby_powder/10'
+                  }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <div className="flex gap-2">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => goToPage(i)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300
+                      ${i === page
+                        ? isDark ? 'bg-mint_green scale-125' : 'bg-baby_powder scale-125'
+                        : isDark ? 'bg-mint_green/30 hover:bg-mint_green/50' : 'bg-baby_powder/30 hover:bg-baby_powder/50'
+                      }`}
+                  />
+                ))}
               </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Reading
-                </h4>
-                <p className={`transition-colors duration-300
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  Murder Mysteries & Personal Development.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Dance
-                </h4>
-                <p className={`transition-colors duration-300
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  Modern, Hip-Hop, & Breaking.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Learning Spanish
-                </h4>
-                <p className={`transition-colors duration-300
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  Studying Spanish Within Literature, Music, & Film.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Graphite Sketching
-                </h4>
-                <p className={`transition-colors duration-300
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  2D Pencil Drawings.
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg transition-colors duration-300
-                ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                <h4 className={`font-semibold text-lg transition-colors duration-300
-                  ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                  Calisthenics
-                </h4>
-                <p className={`transition-colors duration-300
-                  ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  Just Moving in General.
-                </p>
-              </div>
+
+              <button
+                onClick={() => goToPage(page + 1)}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110
+                  ${isDark
+                    ? 'text-mint_green border border-mint_green/40 hover:bg-mint_green/10'
+                    : 'text-baby_powder border border-baby_powder/40 hover:bg-baby_powder/10'
+                  }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
-          </motion.div>
-        );
-      
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <section id="about" className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className={`max-w-6xl mx-auto rounded-3xl p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative
-          ${isDark 
-            ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(159,189,143,0.1)]' 
-            : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
-          }`}
-        style={{
-          backdropFilter: 'blur(20px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-          boxShadow: isDark 
-            ? '0 8px 32px 0 rgba(159, 189, 143, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)'
-            : '0 8px 32px 0 rgba(48, 87, 122, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
-        }}
-      >
-        {/* Navigation Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8 relative z-10">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-1.5 rounded-lg font-medium transition-all duration-300 transform hover:scale-105
-                ${activeTab === tab.id
-                  ? isDark 
-                    ? 'bg-mint_green text-eerie_black shadow-lg' 
-                    : 'bg-baby_powder text-yinmn_blue shadow-lg'
-                  : isDark
-                    ? 'text-mint_green hover:bg-mint_green/20 border border-mint_green/60'
-                    : 'text-baby_powder hover:bg-baby_powder/20 border border-baby_powder/30'
-                }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Content Area */}
-        <div className="max-w-3xl mx-auto relative z-10">
-          <AnimatePresence mode="wait">
-            {renderContent()}
-          </AnimatePresence>
+          )}
         </div>
       </motion.div>
     </section>
