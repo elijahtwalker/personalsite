@@ -139,7 +139,7 @@ export default function About() {
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   Hi, I'm Elijah. I'm a Software Engineer.
                 </p>
-                <ul className={`space-y-2 transition-colors duration-300
+                <ul className={`space-y-2 text-lg transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   <li className="flex items-start">
                     <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
@@ -326,7 +326,7 @@ export default function About() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className={`max-w-6xl mx-auto rounded-3xl p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative flex flex-col h-auto md:h-[350px]
+        className={`max-w-6xl mx-auto rounded-3xl px-8 py-4 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative flex flex-col h-auto md:h-[350px]
           ${isDark
             ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(159,189,143,0.1)]'
             : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
