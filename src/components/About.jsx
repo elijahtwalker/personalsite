@@ -345,17 +345,26 @@ export default function About() {
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`px-5 py-1.5 rounded-lg font-medium transition-all duration-300 transform hover:scale-105
+              className={`relative overflow-hidden px-5 py-1.5 rounded-lg font-medium transition-all duration-300 transform hover:scale-105
                 ${activeTab === tab.id
                   ? isDark
-                    ? 'bg-mint_green text-eerie_black shadow-lg'
-                    : 'bg-baby_powder text-yinmn_blue shadow-lg'
+                    ? 'text-eerie_black shadow-lg border border-transparent'
+                    : 'text-yinmn_blue shadow-lg border border-transparent'
                   : isDark
                     ? 'text-mint_green hover:bg-mint_green/20 border border-mint_green/60'
                     : 'text-baby_powder hover:bg-baby_powder/20 border border-baby_powder/30'
                 }`}
             >
-              {tab.label}
+              {activeTab === tab.id && (
+                <motion.span
+                  className={`absolute inset-0 rounded-lg ${isDark ? 'bg-mint_green' : 'bg-baby_powder'}`}
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ originX: 0 }}
+                />
+              )}
+              <span className="relative z-10">{tab.label}</span>
             </button>
           ))}
         </div>
