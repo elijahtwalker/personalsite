@@ -320,13 +320,13 @@ export default function About() {
   };
 
   return (
-    <section id="about" className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
+    <section id="about" className={`relative py-20 px-4 overflow-hidden transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className={`max-w-6xl mx-auto rounded-3xl px-8 py-4 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative flex flex-col h-auto md:h-[350px]
+        className={`max-w-6xl mx-auto rounded-3xl px-8 py-4 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative z-10 flex flex-col h-auto md:h-[350px]
           ${isDark
             ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(159,189,143,0.1)]'
             : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'

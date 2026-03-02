@@ -3,7 +3,7 @@ import { Link } from 'react-scroll';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useMouseParallax } from '../hooks/useMouseParallax';
 import { useTheme } from '../context/ThemeContext';
-import { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Hero() {
   const mousePosition = useMouseParallax(10);
@@ -20,19 +20,6 @@ export default function Hero() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Create bubbles with static positions using useMemo
-  const bubbles = useMemo(() => Array.from({ length: 50 }, (_, i) => ({
-    id: i,
-    size: Math.random() * (200 - 50) + 50,
-    delay: i * 0.4, // Increased delay for slower, more spaced out initial appearance
-    duration: Math.random() * (15 - 10) + 10, // Much slower, more consistent duration
-    startX: window.innerWidth - Math.random() * 400,
-    startY: window.innerHeight + Math.random() * 400,
-    endX: Math.random() * 300,
-    endY: -200,
-    opacity: Math.random() * (0.2 - 0.03) + 0.03,
-  })), []);
 
   return (
     <section id="home" className={`relative h-screen overflow-hidden transition-colors duration-300
@@ -74,54 +61,6 @@ export default function Hero() {
             </span>
           </motion.div>
         </motion.div>
-      </div>
-
-      {/* Floating bubbles - now in front */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
-        {bubbles.map((bubble) => (
-          <motion.div
-            key={bubble.id}
-            className={`absolute rounded-full transition-colors duration-300 backdrop-blur-sm
-              ${isDark ? 'bg-mint_green/40' : 'bg-baby_powder'}`}
-            style={{
-              width: bubble.size,
-              height: bubble.size,
-              left: bubble.startX,
-              top: bubble.startY,
-            }}
-            initial={{ 
-              opacity: 0,
-              scale: 0,
-              x: 0,
-              y: 0,
-            }}
-            animate={{ 
-              opacity: bubble.opacity,
-              scale: 1,
-              x: [
-                0,
-                -(bubble.startX - bubble.endX) * 0.2,
-                -(bubble.startX - bubble.endX) * 0.4,
-                -(bubble.startX - bubble.endX) * 0.7,
-                -(bubble.startX - bubble.endX)
-              ],
-              y: [
-                0,
-                -(bubble.startY - bubble.endY) * 0.4,
-                -(bubble.startY - bubble.endY) * 0.6,
-                -(bubble.startY - bubble.endY) * 0.9,
-                -(bubble.startY - bubble.endY)
-              ]
-            }}
-            transition={{
-              duration: bubble.duration,
-              delay: bubble.delay,
-              repeat: Infinity,
-              repeatDelay: 0.8,
-              ease: "linear"
-            }}
-          />
-        ))}
       </div>
 
       {/* Scroll indicator */}

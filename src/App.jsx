@@ -2,14 +2,16 @@ import { ThemeProvider } from './context/ThemeContext'
 import Hero from './components/Hero'
 import About from './components/About'
 import Footer from './components/Footer'
+import FloatingBubbles from './components/FloatingBubbles'
 import MouseGlow from './components/MouseGlow'
 import ThemeToggle from './components/ThemeToggle'
 
 function App() {
   return (
     <ThemeProvider>
-      <div className="relative">
+      <div className="relative overflow-x-hidden">
         <MouseGlow />
+        <FloatingBubbles />
         <ThemeToggle />
         <Hero />
         <About />
