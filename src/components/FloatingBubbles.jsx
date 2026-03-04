@@ -33,8 +33,9 @@ export default function FloatingBubbles() {
     const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
     const pageH = vh * 2.5;
     const N = 20;
+    const isMobile = vw < 768;
 
-    const baseWaypoints = [
+    const desktopWaypoints = [
       [0.00, 1.00],
       [0.08, 0.97],
       [0.16, 0.94],
@@ -64,24 +65,54 @@ export default function FloatingBubbles() {
       [0.00, 0.00],
     ];
 
-    return Array.from({ length: 70 }, (_, i) => {
-      const size = Math.random() * 150 + 50;
+    const mobileWaypoints = [
+      [0.00, 0.00],
+      [0.15, 0.08],
+      [0.30, 0.16],
+      [0.65, 0.25],
+      [0.75, 0.35],
+      [0.90, 0.46],
+      [0.28, 0.56],
+      [0.22, 0.66],
+      [0.14, 0.76],
+      [0.02, 0.86],
+      [0.00, 0.96],
+    ];
+
+    const baseWaypoints = isMobile ? mobileWaypoints : desktopWaypoints;
+    const bubbleCount = isMobile ? 50 : 70;
+
+    return Array.from({ length: bubbleCount }, (_, i) => {
+      const size = isMobile ? Math.random() * 48 + 24 : Math.random() * 150 + 50;
       const rx = (Math.random() - 0.5) * vw * 0.06;
       const ry = (Math.random() - 0.5) * pageH * 0.02;
 
       const scaled = baseWaypoints.map(([x, y]) => [x * vw, y * pageH * 0.95]);
       const pts = lerp(scaled, N);
+      const pathX = isMobile
+        ? (() => {
+            const x0 = pts[0][0];
+            return pts.map(([x]) => Math.min(vw * 0.72, Math.max(-size * 0.3, x - x0 + rx * 0.1)));
+          })()
+        : pts.map(([x]) => x + rx);
+
+      const pathY = isMobile
+        ? (() => {
+            const y0 = pts[0][1];
+            return pts.map(([, y]) => y - y0 + ry * 0.1);
+          })()
+        : pts.map(([, y]) => -y + ry);
 
       return {
         id: i,
         size,
         delay: i * 0.4,
         duration: Math.random() * 8 + 16,
-        startX: Math.random() * 150,
-        startY: pageH - 100 - Math.random() * 400,
+        startX: isMobile ? Math.random() * 30 : Math.random() * 150,
+        startY: isMobile ? Math.random() * 40 : pageH - 100 - Math.random() * 400,
         opacity: Math.random() * 0.17 + 0.03,
-        pathX: pts.map(([x]) => x + rx),
-        pathY: pts.map(([, y]) => -y + ry),
+        pathX,
+        pathY,
       };
     });
   }, []);
