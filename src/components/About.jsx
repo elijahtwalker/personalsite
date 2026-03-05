@@ -185,7 +185,7 @@ export default function About() {
                         onMouseEnter={handleUtdEnter}
                         onMouseLeave={handleUtdLeave}
                       >
-                        University of Texas at Dallas
+                        The University of Texas at Dallas
                         <motion.span
                           className={`absolute left-0 bottom-0 h-[1px] w-full border-b border-dashed ${isDark ? 'border-mint_green' : 'border-baby_powder'}`}
                           initial={{ scaleX: 0 }}
