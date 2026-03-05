@@ -408,7 +408,7 @@ export default function About() {
                             <img
                               src={item.icon}
                               alt={item.title}
-                              className={`object-contain pointer-events-none transition-all duration-300 ${item.title === 'VP of Membership' ? 'w-10 h-10 md:w-20 md:h-20' : 'w-9 h-9 md:w-16 md:h-16'}`}
+                              className={`object-contain pointer-events-none transition-all duration-300 ${item.title === 'VP of Membership' ? 'w-12 h-12 md:w-24 md:h-24' : 'w-9 h-9 md:w-16 md:h-16'}`}
                               style={isDark
                                 ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
                                 : {}
@@ -458,7 +458,7 @@ export default function About() {
                             <img
                               src={involvementItems[selectedInvolvement].icon}
                               alt={involvementItems[selectedInvolvement].title}
-                              className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-8 h-8' : 'w-7 h-7'}`}
+                              className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-10 h-10' : 'w-7 h-7'}`}
                               style={isDark
                                 ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
                                 : {}
@@ -519,7 +519,7 @@ export default function About() {
                           <img
                             src={involvementItems[selectedInvolvement].icon}
                             alt={involvementItems[selectedInvolvement].title}
-                            className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-16 h-16' : 'w-14 h-14'}`}
+                            className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-20 h-20' : 'w-14 h-14'}`}
                             style={isDark
                               ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
                               : {}
