@@ -109,7 +109,7 @@ export default function FloatingBubbles() {
         delay: i * 0.4,
         duration: Math.random() * 8 + 16,
         startX: isMobile ? Math.random() * 30 : Math.random() * 150,
-        startY: isMobile ? Math.random() * 40 : pageH - 100 - Math.random() * 400,
+        startY: isMobile ? Math.random() * 40 : pageH - Math.random() * 400,
         opacity: Math.random() * 0.17 + 0.03,
         pathX,
         pathY,
@@ -132,7 +132,7 @@ export default function FloatingBubbles() {
         <motion.div
           key={bubble.id}
           className={`absolute rounded-full backdrop-blur-sm transition-colors duration-300
-            ${isDark ? 'bg-mint_green/40' : 'bg-baby_powder'}`}
+            ${isDark ? 'bg-mint_green/90' : 'bg-baby_powder'}`}
           style={{
             width: bubble.size,
             height: bubble.size,
