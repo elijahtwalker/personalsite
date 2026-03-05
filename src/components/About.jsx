@@ -225,7 +225,7 @@ export default function About() {
                                   alt="CS Webring"
                                   className="w-5 h-auto"
                                   style={isDark
-                                    ? { filter: 'brightness(0) saturate(100%) invert(73%) sepia(11%) saturate(654%) hue-rotate(62deg) brightness(96%) contrast(87%)' }
+                                    ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
                                     : { filter: 'brightness(0) saturate(100%) invert(29%) sepia(25%) saturate(1200%) hue-rotate(173deg) brightness(95%) contrast(90%)' }
                                   }
                                 />
@@ -266,7 +266,7 @@ export default function About() {
                     alt="Elijah Walker"
                     className="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover shadow-lg border-4 transition-all duration-300 hover:scale-105"
                     style={{
-                      borderColor: isDark ? 'rgba(159, 189, 143, 0.5)' : '#355070'
+                      borderColor: isDark ? 'rgba(85, 107, 63, 0.5)' : '#355070'
                     }}
                   />
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent to-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
@@ -290,7 +290,7 @@ export default function About() {
             <div className="grid gap-3 md:grid-cols-2">
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
-                  ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
                     {item.title}
@@ -323,7 +323,7 @@ export default function About() {
             <div className="grid gap-3 md:grid-cols-2">
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
-                  ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                   <div className="flex items-center gap-2">
                     <h4 className={`font-semibold text-lg transition-colors duration-300
                       ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -408,7 +408,7 @@ export default function About() {
                               alt={item.title}
                               className={`object-contain pointer-events-none transition-all duration-300 ${item.title === 'VP of Membership' ? 'w-10 h-10 md:w-20 md:h-20' : 'w-9 h-9 md:w-16 md:h-16'}`}
                               style={isDark
-                                ? { filter: 'brightness(0) saturate(100%) invert(73%) sepia(11%) saturate(654%) hue-rotate(62deg) brightness(96%) contrast(87%)' }
+                                ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
                                 : {}
                               }
                             />
@@ -458,7 +458,7 @@ export default function About() {
                               alt={involvementItems[selectedInvolvement].title}
                               className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-8 h-8' : 'w-7 h-7'}`}
                               style={isDark
-                                ? { filter: 'brightness(0) saturate(100%) invert(73%) sepia(11%) saturate(654%) hue-rotate(62deg) brightness(96%) contrast(87%)' }
+                                ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
                                 : {}
                               }
                             />
@@ -519,7 +519,7 @@ export default function About() {
                             alt={involvementItems[selectedInvolvement].title}
                             className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-16 h-16' : 'w-14 h-14'}`}
                             style={isDark
-                              ? { filter: 'brightness(0) saturate(100%) invert(73%) sepia(11%) saturate(654%) hue-rotate(62deg) brightness(96%) contrast(87%)' }
+                              ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
                               : {}
                             }
                           />
@@ -585,7 +585,7 @@ export default function About() {
             <div className="grid gap-3 md:grid-cols-3">
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[100px]
-                  ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
                     {item.title}
@@ -614,14 +614,14 @@ export default function About() {
         transition={{ duration: 0.8 }}
         className={`max-w-6xl mx-auto rounded-3xl px-8 py-4 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative z-10 flex flex-col h-auto md:h-[350px]
           ${isDark
-            ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(159,189,143,0.1)]'
+            ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(85,107,63,0.1)]'
             : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
           }`}
         style={{
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           boxShadow: isDark
-            ? '0 8px 32px 0 rgba(159, 189, 143, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)'
+            ? '0 8px 32px 0 rgba(85, 107, 63, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)'
             : '0 8px 32px 0 rgba(48, 87, 122, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
         }}
       >
@@ -671,7 +671,7 @@ export default function About() {
                 rel="noopener noreferrer"
                 className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-[1.02]
                   ${isDark
-                    ? 'bg-dark-800 border border-mint_green/60 text-mint_green hover:bg-dark-800/80'
+                    ? 'bg-dark-950 border border-mint_green/60 text-mint_green hover:bg-dark-900'
                     : 'bg-baby_powder/20 border border-yinmn_blue/30 text-baby_powder hover:bg-baby_powder/30'
                   }`}
               >

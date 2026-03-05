@@ -20,7 +20,7 @@ export default function ThemeToggle() {
         transition={{ duration: 0.3 }}
       >
         {isDark ? (
-          <MoonIcon className="w-6 h-6 text-mint_green drop-shadow-[0_0_4px_rgba(159,189,143,0.5)]" />
+          <MoonIcon className="w-6 h-6 text-mint_green drop-shadow-[0_0_4px_rgba(85,107,63,0.5)]" />
         ) : (
           <SunIcon className="w-6 h-6 text-baby_powder" />
         )}

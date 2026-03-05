@@ -81,7 +81,7 @@
   background: linear-gradient(
     45deg,
     transparent 30%,
-    var(--liquid-color, rgba(159, 189, 143, 0.08)) 50%,
+    var(--liquid-color, rgba(85, 107, 63, 0.08)) 50%,
     transparent 70%
   );
   animation: liquid-shift 25s ease-in-out infinite;
@@ -98,10 +98,10 @@
   bottom: 0;
   background: linear-gradient(
     135deg,
-    var(--liquid-color-light, rgba(159, 189, 143, 0.04)) 0%,
+    var(--liquid-color-light, rgba(85, 107, 63, 0.04)) 0%,
     transparent 25%,
     transparent 75%,
-    var(--liquid-color-light, rgba(159, 189, 143, 0.04)) 100%
+    var(--liquid-color-light, rgba(85, 107, 63, 0.04)) 100%
   );
   background-size: 200% 200%;
   animation: liquid-flow 18s ease-in-out infinite;

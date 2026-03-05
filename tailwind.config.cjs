@@ -12,9 +12,9 @@ module.exports = {
       },
       colors: {
         baby_powder: '#fbfef9',
-        eerie_black: '#1D1D1D',
+        eerie_black: '#000000',
         yinmn_blue: '#30577a',
-        mint_green: '#9FBD8F',
+        mint_green: '#556b3f',
         black: {
           DEFAULT: '#000000',
           100: '#000000',
