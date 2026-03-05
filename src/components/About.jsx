@@ -8,6 +8,9 @@ export default function About() {
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1);
 
+  const [selectedInvolvement, setSelectedInvolvement] = useState(null);
+  const [lightboxPhoto, setLightboxPhoto] = useState(null);
+
   const [utdHovered, setUtdHovered] = useState(false);
   const utdRef = useRef(null);
   const utdTimeoutRef = useRef(null);
@@ -70,24 +73,30 @@ export default function About() {
   const involvementItems = [
     {
       title: 'President',
-      subtitle: 'The Association of Computing Machinery @ UTD • December 2024 - Present',
+      subtitle: 'ACM @ UTD • Dec 2024 - Present',
+      icon: '/images/ACMLogoWhite.png',
       bullets: [
         'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 180+ officers at the forefront of innovation and intellectual curiosity.'
-      ]
+      ],
+      photo: '/images/acmpres.JPG',
     },
     {
-      title: 'Vice President of Membership',
-      subtitle: 'Alpha Kappa Psi Mu Rho Chapter • May 2025 - December 2025',
+      title: 'VP of Membership',
+      subtitle: 'AKPsi Mu Rho • May - Dec 2025',
+      icon: '/images/akpsi.png',
       bullets: [
         'Lead the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheading the rush process with 8 events and 300+ participants.'
-      ]
+      ],
+      photo: '/images/vpm.JPEG',
     },
     {
       title: 'Director of Research',
-      subtitle: 'The Association of Computing Machinery @ UTD • May 2024 - December 2024',
+      subtitle: 'ACM @ UTD • May - Dec 2024',
+      icon: '/images/ResearchWhite.png',
       bullets: [
         'Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.'
-      ]
+      ],
+      photo: '/images/research.JPG',
     },
   ];
 
@@ -123,6 +132,7 @@ export default function About() {
   const handleTabChange = (tabId) => {
     setDirection(1);
     setPage(0);
+    setSelectedInvolvement(null);
     setActiveTab(tabId);
   };
 
@@ -164,7 +174,7 @@ export default function About() {
                     <span>Incoming Software Engineering Intern @ Microsoft</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
+                    <span className="mr-2 mt-3 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
                     <span>
                       Computer Science @{' '}
                       <span
@@ -235,7 +245,7 @@ export default function About() {
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
+                    <span className="mr-2 mt-3 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
                     <span>Background in Full-Stack Development & Machine Learning</span>
                   </li>
                 </ul>
@@ -349,37 +359,214 @@ export default function About() {
       case 'involvement':
         return (
           <motion.div
-            key={`involvement-${page}`}
+            key="involvement"
             custom={direction}
             variants={contentVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="h-full"
           >
-            <div className="space-y-3">
-              {currentPageItems.map((item, i) => (
-                <div key={i} className={`p-3 rounded-lg transition-colors duration-300
-                  ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                  <h4 className={`font-semibold text-lg transition-colors duration-300
-                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                    {item.title}
-                  </h4>
-                  <p className={`text-sm transition-colors duration-300
-                    ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                    {item.subtitle}
-                  </p>
-                  <p className={`mt-2 transition-colors duration-300
-                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                    {item.bullets.map((bullet, j) => (
-                      <span key={j}>
-                        {j > 0 && <br />}
-                        • {bullet}
-                      </span>
-                    ))}
-                  </p>
-                </div>
-              ))}
+            <div className="relative flex items-center justify-center h-full min-h-[200px]">
+              <AnimatePresence mode="wait">
+                {selectedInvolvement === null ? (
+                  <motion.div
+                    key="bubbles"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-end justify-center gap-4 md:gap-12 w-full px-2 -mt-6"
+                  >
+                    {involvementItems.map((item, i) => {
+                      const offsets = [12, -16, 6];
+                      const amplitudes = [-10, -6, -12];
+                      return (
+                        <motion.button
+                          key={i}
+                          onClick={() => setSelectedInvolvement(i)}
+                          style={{ marginBottom: offsets[i] }}
+                          animate={{ y: [0, amplitudes[i], 0] }}
+                          transition={{
+                            duration: 2.5 + i * 0.3,
+                            delay: i * 0.6,
+                            repeat: Infinity,
+                            ease: 'easeInOut',
+                          }}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`w-20 h-20 md:w-32 md:h-32 rounded-full flex flex-col items-center justify-center text-center p-2 md:p-3 cursor-pointer backdrop-blur-sm transition-colors duration-300
+                            ${isDark
+                              ? 'bg-mint_green/15 border border-mint_green/50 hover:bg-mint_green/25'
+                              : 'bg-baby_powder/20 border border-baby_powder/40 hover:bg-baby_powder/30'
+                            }`}
+                        >
+                          {item.icon ? (
+                            <img
+                              src={item.icon}
+                              alt={item.title}
+                              className={`object-contain pointer-events-none transition-all duration-300 ${item.title === 'VP of Membership' ? 'w-10 h-10 md:w-20 md:h-20' : 'w-9 h-9 md:w-16 md:h-16'}`}
+                              style={isDark
+                                ? { filter: 'brightness(0) saturate(100%) invert(73%) sepia(11%) saturate(654%) hue-rotate(62deg) brightness(96%) contrast(87%)' }
+                                : {}
+                              }
+                            />
+                          ) : (
+                            <>
+                              <span className={`text-sm md:text-base font-bold leading-tight transition-colors duration-300 pointer-events-none
+                                ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                                {item.title}
+                              </span>
+                              <span className={`text-xs md:text-sm mt-1 leading-tight opacity-70 transition-colors duration-300 pointer-events-none
+                                ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                                {item.subtitle.split('•')[0].trim()}
+                              </span>
+                            </>
+                          )}
+                        </motion.button>
+                      );
+                    })}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`detail-${selectedInvolvement}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full h-full overflow-y-auto md:overflow-visible"
+                  >
+                    {/* Mobile: bubble left of text, photo below */}
+                    <div className="flex flex-col gap-3 md:hidden">
+                      <div className="flex items-center gap-3">
+                        <motion.button
+                          onClick={() => setSelectedInvolvement(null)}
+                          initial={{ x: -10, scale: 0.8 }}
+                          animate={{ x: 0, scale: 1 }}
+                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`w-16 h-16 rounded-full flex items-center justify-center p-2 flex-shrink-0 cursor-pointer backdrop-blur-sm transition-colors duration-300
+                            ${isDark
+                              ? 'bg-mint_green/20 border-2 border-mint_green/60'
+                              : 'bg-baby_powder/25 border-2 border-baby_powder/50'
+                            }`}
+                        >
+                          {involvementItems[selectedInvolvement].icon ? (
+                            <img
+                              src={involvementItems[selectedInvolvement].icon}
+                              alt={involvementItems[selectedInvolvement].title}
+                              className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-8 h-8' : 'w-7 h-7'}`}
+                              style={isDark
+                                ? { filter: 'brightness(0) saturate(100%) invert(73%) sepia(11%) saturate(654%) hue-rotate(62deg) brightness(96%) contrast(87%)' }
+                                : {}
+                              }
+                            />
+                          ) : (
+                            <span className={`text-xs font-bold leading-tight transition-colors duration-300 pointer-events-none
+                              ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                              {involvementItems[selectedInvolvement].title}
+                            </span>
+                          )}
+                        </motion.button>
+
+                        <div className="flex-1 min-w-0">
+                          <h4 className={`text-sm font-bold mb-0.5 transition-colors duration-300
+                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                            {involvementItems[selectedInvolvement].title}
+                          </h4>
+                          <p className={`text-xs mb-1 opacity-80 transition-colors duration-300
+                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                            {involvementItems[selectedInvolvement].subtitle}
+                          </p>
+                          <p className={`text-xs leading-relaxed transition-colors duration-300
+                            ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
+                            {involvementItems[selectedInvolvement].bullets[0]}
+                          </p>
+                        </div>
+                      </div>
+
+                      <motion.img
+                        src={involvementItems[selectedInvolvement].photo}
+                        alt={involvementItems[selectedInvolvement].title}
+                        onClick={() => setLightboxPhoto(involvementItems[selectedInvolvement].photo)}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.25 }}
+                        className={`w-full aspect-[3/2] rounded-lg object-cover border cursor-pointer transition-colors duration-300
+                          ${isDark ? 'border-mint_green/40' : 'border-baby_powder/30'}`}
+                      />
+                    </div>
+
+                    {/* Desktop: horizontal layout */}
+                    <div className="hidden md:flex items-center gap-6 w-full">
+                      <motion.button
+                        onClick={() => setSelectedInvolvement(null)}
+                        initial={{ x: 40, scale: 0.8 }}
+                        animate={{ x: 0, scale: 1 }}
+                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                        whileHover={{ scale: 1.08 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`w-28 h-28 rounded-full flex flex-col items-center justify-center text-center p-2 flex-shrink-0 cursor-pointer backdrop-blur-sm transition-colors duration-300 ml-2
+                          ${isDark
+                            ? 'bg-mint_green/20 border-2 border-mint_green/60 hover:bg-mint_green/30'
+                            : 'bg-baby_powder/25 border-2 border-baby_powder/50 hover:bg-baby_powder/35'
+                          }`}
+                      >
+                        {involvementItems[selectedInvolvement].icon ? (
+                          <img
+                            src={involvementItems[selectedInvolvement].icon}
+                            alt={involvementItems[selectedInvolvement].title}
+                            className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-16 h-16' : 'w-14 h-14'}`}
+                            style={isDark
+                              ? { filter: 'brightness(0) saturate(100%) invert(73%) sepia(11%) saturate(654%) hue-rotate(62deg) brightness(96%) contrast(87%)' }
+                              : {}
+                            }
+                          />
+                        ) : (
+                          <span className={`text-base font-bold leading-tight transition-colors duration-300 pointer-events-none
+                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                            {involvementItems[selectedInvolvement].title}
+                          </span>
+                        )}
+                      </motion.button>
+
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.15, ease: 'easeOut' }}
+                        className="flex-1 min-w-0 flex items-center gap-4"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <h4 className={`text-lg font-bold mb-0.5 transition-colors duration-300
+                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                            {involvementItems[selectedInvolvement].title}
+                          </h4>
+                          <p className={`text-sm mb-1.5 opacity-80 transition-colors duration-300
+                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                            {involvementItems[selectedInvolvement].subtitle}
+                          </p>
+                          <p className={`text-base leading-relaxed transition-colors duration-300
+                            ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
+                            {involvementItems[selectedInvolvement].bullets[0]}
+                          </p>
+                        </div>
+                        <motion.img
+                          src={involvementItems[selectedInvolvement].photo}
+                          alt={involvementItems[selectedInvolvement].title}
+                          onClick={() => setLightboxPhoto(involvementItems[selectedInvolvement].photo)}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: 0.25 }}
+                          whileHover={{ scale: 1.03 }}
+                          className={`w-72 aspect-[3/2] rounded-lg object-cover border flex-shrink-0 cursor-pointer transition-colors duration-300
+                            ${isDark ? 'border-mint_green/40' : 'border-baby_powder/30'}`}
+                        />
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         );
@@ -499,10 +686,34 @@ export default function About() {
             </h3>
           )}
           {activeTab === 'involvement' && (
-            <h3 className={`text-2xl font-bold mb-3 flex-shrink-0 transition-colors duration-300
-              ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-              Campus Involvement
-            </h3>
+            <div className="flex items-center justify-between mb-3 flex-shrink-0">
+              <h3 className={`text-2xl font-bold transition-colors duration-300
+                ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                Campus Involvement
+              </h3>
+              <AnimatePresence>
+                {selectedInvolvement !== null && (
+                  <motion.button
+                    onClick={() => setSelectedInvolvement(null)}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300
+                      ${isDark
+                        ? 'text-mint_green/70 hover:text-mint_green hover:bg-mint_green/10'
+                        : 'text-baby_powder/70 hover:text-baby_powder hover:bg-baby_powder/10'
+                      }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                    </svg>
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
           )}
           {activeTab === 'interests' && (
             <h3 className={`text-2xl font-bold mb-3 flex-shrink-0 transition-colors duration-300
@@ -518,7 +729,7 @@ export default function About() {
           </div>
 
           {/* Carousel Navigation */}
-          {totalPages > 1 && (
+          {totalPages > 1 && activeTab !== 'involvement' && (
             <div className="flex items-center justify-center gap-3 pt-3 flex-shrink-0">
               <button
                 onClick={() => goToPage(page - 1)}
@@ -563,6 +774,30 @@ export default function About() {
           )}
         </div>
       </motion.div>
+
+      <AnimatePresence>
+        {lightboxPhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={() => setLightboxPhoto(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm cursor-pointer"
+          >
+            <motion.img
+              src={lightboxPhoto}
+              alt="Enlarged view"
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-[90vw] max-h-[85vh] rounded-xl object-contain shadow-2xl cursor-default"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
