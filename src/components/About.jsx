@@ -76,16 +76,16 @@ export default function About() {
       subtitle: 'ACM @ UTD • Dec 2024 - Present',
       icon: '/images/ACMLogoWhite.png',
       bullets: [
-        'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 180+ officers at the forefront of innovation and intellectual curiosity.'
+        'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 190+ officers at the forefront of innovation and intellectual curiosity.'
       ],
       photo: '/images/acmpres.JPG',
     },
     {
-      title: 'VP of Membership',
-      subtitle: 'AKPsi Mu Rho • May - Dec 2025',
+      title: 'Vice President of Membership',
+      subtitle: 'AKPsi Mu Rho • May 2025 - Dec 2025',
       icon: '/images/akpsi.png',
       bullets: [
-        'Lead the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheading the rush process with 8 events and 300+ participants.'
+        'Led the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheaded the rush process with 8 events and 300+ participants.'
       ],
       photo: '/images/vpm.JPEG',
     },
@@ -103,13 +103,15 @@ export default function About() {
   const interestItems = [
     { title: 'Pastry Baking', description: 'Drop Cookies, Sweet Breads, & Puff Pastries.' },
     { title: 'Reading', description: 'Murder Mysteries & Personal Development.' },
-    { title: 'Dance', description: 'Modern, Hip-Hop, & Breaking.' },
-    { title: 'Learning Spanish', description: 'Studying Spanish Within Literature, Music, & Film.' },
-    { title: 'Graphite Sketching', description: '2D Pencil Drawings.' },
-    { title: 'Calisthenics', description: 'Just Moving in General.' },
+    { title: 'Dance', description: 'Modern, Hip-Hop, Bachata, & Breaking.' },
+    { title: 'Video Editing', description: 'Color Grading, Special Effects, & Storytelling.' },
+    { title: 'Game Development', description: 'Interactive Design & Character Animation.' },
+    { title: 'Learning Spanish', description: 'Studying Spanish in Literature & Media.' },
+    { title: 'Graphite Sketching', description: '2D Pencil Drawings & Contour Drawing.' },
+    { title: 'Calisthenics', description: 'Staying Active, Mobile, & Moving in the Gym.' },
   ];
 
-  const ITEMS_PER_PAGE = { experience: 2, projects: 2, involvement: 1, interests: 3 };
+  const ITEMS_PER_PAGE = { experience: 2, projects: 2, involvement: 1, interests: 4 };
 
   const paginate = (items, perPage) => {
     const result = [];
@@ -582,14 +584,15 @@ export default function About() {
             exit="exit"
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
               {currentPageItems.map((item, i) => (
-                <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[100px]
+                <div key={i} className={`p-4 rounded-lg transition-colors duration-300 min-h-[120px] flex flex-col justify-center
                   ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
                     {item.title}
                   </h4>
+                  <div className={`w-12 h-[1px] my-2 ${isDark ? 'bg-mint_green/40' : 'bg-baby_powder/40'}`} />
                   <p className={`transition-colors duration-300
                     ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                     {item.description}
@@ -733,13 +736,13 @@ export default function About() {
             <div className="flex items-center justify-center gap-3 pt-3 flex-shrink-0">
               <button
                 onClick={() => goToPage(page - 1)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110
+                className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110
                   ${isDark
                     ? 'text-mint_green border border-mint_green/40 hover:bg-mint_green/10'
                     : 'text-baby_powder border border-baby_powder/40 hover:bg-baby_powder/10'
                   }`}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
@@ -760,13 +763,13 @@ export default function About() {
 
               <button
                 onClick={() => goToPage(page + 1)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110
+                className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110
                   ${isDark
                     ? 'text-mint_green border border-mint_green/40 hover:bg-mint_green/10'
                     : 'text-baby_powder border border-baby_powder/40 hover:bg-baby_powder/10'
                   }`}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </button>
