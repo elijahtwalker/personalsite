@@ -398,7 +398,7 @@ export default function About() {
                           whileTap={{ scale: 0.95 }}
                           className={`w-20 h-20 md:w-32 md:h-32 rounded-full flex flex-col items-center justify-center text-center p-2 md:p-3 cursor-pointer backdrop-blur-sm transition-colors duration-300
                             ${isDark
-                              ? 'bg-mint_green/15 border border-mint_green/50 hover:bg-mint_green/25'
+                              ? 'bg-mint_green/25 border border-mint_green/60 hover:bg-mint_green/35'
                               : 'bg-baby_powder/20 border border-baby_powder/40 hover:bg-baby_powder/30'
                             }`}
                         >
@@ -448,8 +448,8 @@ export default function About() {
                           whileTap={{ scale: 0.95 }}
                           className={`w-16 h-16 rounded-full flex items-center justify-center p-2 flex-shrink-0 cursor-pointer backdrop-blur-sm transition-colors duration-300
                             ${isDark
-                              ? 'bg-mint_green/20 border-2 border-mint_green/60'
-                              : 'bg-baby_powder/25 border-2 border-baby_powder/50'
+                              ? 'bg-mint_green/30 border-2 border-mint_green/70'
+                            : 'bg-baby_powder/25 border-2 border-baby_powder/50'
                             }`}
                         >
                           {involvementItems[selectedInvolvement].icon ? (
@@ -509,7 +509,7 @@ export default function About() {
                         whileTap={{ scale: 0.95 }}
                         className={`w-28 h-28 rounded-full flex flex-col items-center justify-center text-center p-2 flex-shrink-0 cursor-pointer backdrop-blur-sm transition-colors duration-300 ml-2
                           ${isDark
-                            ? 'bg-mint_green/20 border-2 border-mint_green/60 hover:bg-mint_green/30'
+                            ? 'bg-mint_green/30 border-2 border-mint_green/70 hover:bg-mint_green/40'
                             : 'bg-baby_powder/25 border-2 border-baby_powder/50 hover:bg-baby_powder/35'
                           }`}
                       >
