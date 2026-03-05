@@ -1,5 +1,5 @@
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 export default function About() {
@@ -7,6 +7,24 @@ export default function About() {
   const [activeTab, setActiveTab] = useState('about');
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1);
+
+  const [utdHovered, setUtdHovered] = useState(false);
+  const utdRef = useRef(null);
+  const utdTimeoutRef = useRef(null);
+
+  const handleUtdEnter = () => {
+    if (utdTimeoutRef.current) {
+      clearTimeout(utdTimeoutRef.current);
+      utdTimeoutRef.current = null;
+    }
+    setUtdHovered(true);
+  };
+
+  const handleUtdLeave = () => {
+    utdTimeoutRef.current = setTimeout(() => {
+      setUtdHovered(false);
+    }, 500);
+  };
 
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
@@ -147,7 +165,74 @@ export default function About() {
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
-                    <span>Computer Science @ University of Texas at Dallas</span>
+                    <span>
+                      Computer Science @{' '}
+                      <span
+                        ref={utdRef}
+                        className="relative inline-block cursor-pointer italic"
+                        onMouseEnter={handleUtdEnter}
+                        onMouseLeave={handleUtdLeave}
+                      >
+                        University of Texas at Dallas
+                        <motion.span
+                          className={`absolute left-0 bottom-0 h-[1px] w-full border-b border-dashed ${isDark ? 'border-mint_green' : 'border-baby_powder'}`}
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: utdHovered ? 1 : 0 }}
+                          transition={{ duration: 0.3, ease: 'easeOut' }}
+                          style={{ originX: 0 }}
+                        />
+                        <AnimatePresence>
+                          {utdHovered && (
+                            <motion.div
+                              onMouseEnter={handleUtdEnter}
+                              onMouseLeave={handleUtdLeave}
+                              initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                              transition={{ duration: 0.2, ease: 'easeOut' }}
+                              className={`absolute left-0 right-0 mx-auto w-fit top-full mt-2 z-50 flex items-center gap-3 px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-md transition-colors duration-300
+                                ${isDark
+                                  ? 'bg-dark-800/90 border border-mint_green/40'
+                                  : 'bg-baby_powder/90 border border-yinmn_blue/30'
+                                }`}
+                            >
+                              <a
+                                href="https://cs.utdring.com/#elijahwalker.me?nav=prev"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`text-sm transition-colors duration-300 hover:scale-110 transform ${isDark ? 'text-mint_green hover:text-mint_green/80' : 'text-yinmn_blue hover:text-yinmn_blue/70'}`}
+                              >
+                                ←
+                              </a>
+                              <a
+                                href="https://cs.utdring.com/#elijahwalker.me"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:scale-110 transform transition-transform duration-200"
+                              >
+                                <img
+                                  src="https://cs.utdring.com/icon.white.svg"
+                                  alt="CS Webring"
+                                  className="w-5 h-auto"
+                                  style={isDark
+                                    ? { filter: 'brightness(0) saturate(100%) invert(73%) sepia(11%) saturate(654%) hue-rotate(62deg) brightness(96%) contrast(87%)' }
+                                    : { filter: 'brightness(0) saturate(100%) invert(29%) sepia(25%) saturate(1200%) hue-rotate(173deg) brightness(95%) contrast(90%)' }
+                                  }
+                                />
+                              </a>
+                              <a
+                                href="https://cs.utdring.com/#elijahwalker.me?nav=next"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`text-sm transition-colors duration-300 hover:scale-110 transform ${isDark ? 'text-mint_green hover:text-mint_green/80' : 'text-yinmn_blue hover:text-yinmn_blue/70'}`}
+                              >
+                                →
+                              </a>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </span>
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
