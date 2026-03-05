@@ -91,7 +91,7 @@ export default function About() {
     },
     {
       title: 'Director of Research',
-      subtitle: 'ACM @ UTD • May - Dec 2024',
+      subtitle: 'ACM @ UTD • May 2024 - Dec 2024',
       icon: '/images/ResearchWhite.png',
       bullets: [
         'Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.'
