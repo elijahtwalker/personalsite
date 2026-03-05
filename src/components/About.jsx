@@ -153,11 +153,11 @@ export default function About() {
           >
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
               <div className="flex-1 space-y-4">
-                <p className={`text-lg transition-colors duration-300
+                <p className={`text-sm md:text-lg transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   Hi, I'm Elijah. I'm a Software Engineer.
                 </p>
-                <ul className={`space-y-2 text-lg transition-colors duration-300
+                <ul className={`space-y-2 text-sm md:text-lg transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   <li className="flex items-start">
                     <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
@@ -239,7 +239,7 @@ export default function About() {
                     <span>Background in Full-Stack Development & Machine Learning</span>
                   </li>
                 </ul>
-                <p className={`text-lg transition-colors duration-300
+                <p className={`text-sm md:text-lg transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   Interested in connecting? Say <a href="mailto:hello@elijahwalker.me" className="hover:underline">hello@elijahwalker.me</a>
                 </p>

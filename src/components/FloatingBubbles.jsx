@@ -80,10 +80,10 @@ export default function FloatingBubbles() {
     ];
 
     const baseWaypoints = isMobile ? mobileWaypoints : desktopWaypoints;
-    const bubbleCount = isMobile ? 50 : 70;
+    const bubbleCount = isMobile ? 60 : 70;
 
     return Array.from({ length: bubbleCount }, (_, i) => {
-      const size = isMobile ? Math.random() * 48 + 24 : Math.random() * 150 + 50;
+      const size = isMobile ? Math.random() * 72 + 24 : Math.random() * 150 + 50;
       const rx = (Math.random() - 0.5) * vw * 0.06;
       const ry = (Math.random() - 0.5) * pageH * 0.02;
 
