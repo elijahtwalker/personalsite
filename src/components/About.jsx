@@ -59,12 +59,12 @@ export default function About() {
   ];
 
   const projectItems = [
-    { title: 'Stilus', subtitle: 'React, TypeScript, Tailwind CSS, Python, Flask, & MongoDB', description: 'Digital wardrobe implementing TryOnDiffusion for outfit suggestions of amalgamated fashionable garments.' },
-    { title: 'Hover', subtitle: 'React, Python, Flask, & Tello API', description: 'Visualization of multidimensional objects utilizing heuristic flight algorithms on a Tello drone.' },
-    { title: 'Aerovista', subtitle: 'Python, PyTorch, OpenCV, Tello API, & NumPy', description: 'Leveraged Mask R-CNN and RTMDet-Ins-s to enhance aerial drone SAR performance using a Tello drone.' },
-    { title: 'Ingrediate', subtitle: 'React, Python, Flask, MongoDB, Auth0, & Google Cloud API', description: 'Web application for informed recipe recommendations based on ingredients in their digital pantry.' },
-    { title: 'Insight Invest', subtitle: 'React, Python, Flask, & Quiver API', description: "Interactive dashboard to analyze congressional respresentatives' investment patterns and news." },
-    { title: 'Scaffold', subtitle: 'C++, Reinforcement Learning, Unreal Engine, & Game Design', description: 'Dogfighting simulation confirming the effectiveness of PPO strategies by monitoring agent interactions.' },
+    { title: 'Stilus', subtitle: 'React, TypeScript, Tailwind CSS, Python, Flask, & MongoDB', description: 'Digital wardrobe implementing TryOnDiffusion for outfit suggestions of amalgamated fashionable garments.', github: 'https://github.com/elijahtwalker/stilus' },
+    { title: 'Hover', subtitle: 'React, Python, Flask, & Tello API', description: 'Visualization of multidimensional objects utilizing heuristic flight algorithms on a Tello drone.', github: 'https://github.com/elijahtwalker/hover' },
+    { title: 'Aerovista', subtitle: 'Python, PyTorch, OpenCV, Tello API, & NumPy', description: 'Leveraged Mask R-CNN and RTMDet-Ins-s to enhance aerial drone SAR performance using a Tello drone.', github: 'https://github.com/elijahtwalker/aerovista' },
+    { title: 'Ingrediate', subtitle: 'React, Python, Flask, MongoDB, Auth0, & Google Cloud API', description: 'Web application for informed recipe recommendations based on ingredients in their digital pantry.', github: 'https://github.com/elijahtwalker/ingrediate' },
+    { title: 'Insight Invest', subtitle: 'React, Python, Flask, & Quiver API', description: "Interactive dashboard to analyze congressional respresentatives' investment patterns and news.", github: 'https://github.com/elijahtwalker/insightinvest' },
+    { title: 'Scaffold', subtitle: 'C++, Reinforcement Learning, Unreal Engine, & Game Design', description: 'Dogfighting simulation confirming the effectiveness of PPO strategies by monitoring agent interactions.', github: 'https://github.com/ACM-Research/Scaffold' },
   ];
 
   const involvementItems = [
@@ -153,14 +153,14 @@ export default function About() {
           >
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
               <div className="flex-1 space-y-4">
-                <p className={`text-sm md:text-lg transition-colors duration-300
+                <p className={`text-base md:text-xl transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   Hi, I'm Elijah. I'm a Software Engineer.
                 </p>
-                <ul className={`space-y-2 text-sm md:text-lg transition-colors duration-300
+                <ul className={`space-y-2 text-base md:text-xl transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   <li className="flex items-start">
-                    <span className="mr-2 mt-2 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
+                    <span className="mr-2 mt-3 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
                     <span>Incoming Software Engineering Intern @ Microsoft</span>
                   </li>
                   <li className="flex items-start">
@@ -239,7 +239,7 @@ export default function About() {
                     <span>Background in Full-Stack Development & Machine Learning</span>
                   </li>
                 </ul>
-                <p className={`text-sm md:text-lg transition-colors duration-300
+                <p className={`text-base md:text-xl transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   Interested in connecting? Say <a href="mailto:hello@elijahwalker.me" className="hover:underline">hello@elijahwalker.me</a>
                 </p>
@@ -314,10 +314,24 @@ export default function About() {
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
                   ${isDark ? 'bg-dark-800 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
-                  <h4 className={`font-semibold text-lg transition-colors duration-300
-                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                    {item.title}
-                  </h4>
+                  <div className="flex items-center gap-2">
+                    <h4 className={`font-semibold text-lg transition-colors duration-300
+                      ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                      {item.title}
+                    </h4>
+                    {item.github && (
+                      <a
+                        href={item.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`transition-colors duration-300 hover:scale-110 transform ${isDark ? 'text-mint_green/70 hover:text-mint_green' : 'text-baby_powder/70 hover:text-baby_powder'}`}
+                      >
+                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
                   <p className={`text-sm transition-colors duration-300
                     ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
                     {item.subtitle}
