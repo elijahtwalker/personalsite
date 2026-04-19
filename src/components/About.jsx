@@ -160,7 +160,7 @@ export default function About() {
                   <li className="flex items-start">
                     <span className="mr-2 mt-3 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
                     <span>
-                      Computer Science @ The University of Texas at Dallas
+                      Computer Science @ <span className="italic">The University of Texas at Dallas</span>
                     </span>
                   </li>
                   <li className="flex items-start">
