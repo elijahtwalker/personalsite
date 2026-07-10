@@ -37,10 +37,10 @@ export default function About() {
   ];
 
   const experienceItems = [
+    { title: 'Software Engineering Intern', subtitle: 'Microsoft • May 2026 - Present', description: '• Power BI Growth & Distribution Team working with React, TypeScript, C#, .NET, and LLMs.' },
     { title: 'Software Engineering Intern', subtitle: 'Goldman Sachs • June 2025 - August 2025', description: '• Marquee Portfolio Analytics Team working with React, Redux, Python, Java, and Vert.X.' },
     { title: 'Software Engineering Intern', subtitle: 'Bell Flight • June 2024 - August 2024', description: '• Innovation Flight Controls Software Team working with Python, DXL, and Azure DevOps.' },
-    { title: 'Research Assistant', subtitle: 'CVMC Lab • August 2024 - November 2024', description: '• Stable Diffusion Model Development for Enhanced Audio Synthesis for Video Generation.' },
-    { title: 'Peer-Led Team Learning Tutor', subtitle: 'The University of Texas at Dallas • August 2024 - May 2025', description: '• Multivariable and Advanced Calculus Tutoring for 30+ students in a Weekly Team Environment.' },
+    { title: 'Research Assistant', subtitle: 'CVMC Lab • August 2024 - November 2024', description: '• Stable Diffusion Model Development for Enhanced Audio Synthesis for Video Generation.' }
   ];
 
   const projectItems = [
