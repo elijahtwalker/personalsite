@@ -585,7 +585,7 @@ export default function About() {
                 Work Experience
               </h3>
               <a
-                href="/Resumé_Elijah_Walker.pdf"
+                href="/Resume_Elijah_Walker.pdf"
                 alt="alt text"
                 target="_blank"
                 rel="noopener noreferrer"
