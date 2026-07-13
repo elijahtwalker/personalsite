@@ -2,6 +2,30 @@ import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
+/* Catmull-Rom spline: rounds the straight polyline legs between waypoints
+   into a continuous curve so bubbles never visibly change direction. */
+function catmullRom(pts, segs) {
+  if (pts.length < 3) return pts;
+  const out = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] || p2;
+    for (let s = 0; s < segs; s++) {
+      const t = s / segs;
+      const t2 = t * t;
+      const t3 = t2 * t;
+      out.push([
+        0.5 * (2 * p1[0] + (p2[0] - p0[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (3 * p1[0] - p0[0] - 3 * p2[0] + p3[0]) * t3),
+        0.5 * (2 * p1[1] + (p2[1] - p0[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (3 * p1[1] - p0[1] - 3 * p2[1] + p3[1]) * t3),
+      ]);
+    }
+  }
+  out.push(pts[pts.length - 1]);
+  return out;
+}
+
 function lerp(pts, numOut) {
   const dist = [0];
   for (let i = 1; i < pts.length; i++) {
@@ -32,7 +56,7 @@ export default function FloatingBubbles() {
     const vw = typeof window !== 'undefined' ? window.innerWidth : 1400;
     const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
     const pageH = vh * 2.5;
-    const N = 20;
+    const N = 64;
     const isMobile = vw < 768;
 
     const desktopWaypoints = [
@@ -88,13 +112,24 @@ export default function FloatingBubbles() {
       const ry = (Math.random() - 0.5) * pageH * 0.02;
 
       const scaled = baseWaypoints.map(([x, y]) => [x * vw, y * pageH * 0.95]);
-      const pts = lerp(scaled, N);
+      // Smooth the polyline into a spline, then resample evenly by arc length
+      // so speed along the path stays constant between keyframes.
+      const pts = lerp(catmullRom(scaled, 12), N);
+
+      // Per-bubble sideways sway layered on the path for an underwater feel.
+      const swayAmp = (isMobile ? 5 : 8) + Math.random() * (isMobile ? 7 : 12);
+      const swayPhase = Math.random() * Math.PI * 2;
+      const swayCycles = 2 + Math.random() * 2;
+      const sway = (i) => Math.sin(swayPhase + (i / (N - 1)) * Math.PI * 2 * swayCycles) * swayAmp;
+
       const pathX = isMobile
         ? (() => {
             const x0 = pts[0][0];
-            return pts.map(([x]) => Math.min(vw * 0.72, Math.max(-size * 0.3, x - x0 + rx * 0.1)));
+            return pts.map(([x], i) =>
+              Math.min(vw * 0.72, Math.max(-size * 0.3, x - x0 + rx * 0.1 + sway(i)))
+            );
           })()
-        : pts.map(([x]) => x + rx);
+        : pts.map(([x], i) => x + rx + sway(i));
 
       const pathY = isMobile
         ? (() => {
@@ -117,14 +152,14 @@ export default function FloatingBubbles() {
     });
   }, []);
 
-  const opacityKeys = (o) => {
-    const arr = new Array(20).fill(o);
-    arr[0] = 0;
-    arr[1] = o * 0.5;
-    arr[18] = o * 0.5;
-    arr[19] = 0;
-    return arr;
-  };
+  // Cosine-eased fade in/out over the first and last 12% of the journey,
+  // sized to however many keyframes the path has.
+  const opacityKeys = (o, n) =>
+    Array.from({ length: n }, (_, i) => {
+      const edge = Math.min(i / (n - 1), 1 - i / (n - 1));
+      const fade = Math.min(1, edge / 0.12);
+      return o * ((1 - Math.cos(fade * Math.PI)) / 2);
+    });
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
@@ -141,7 +176,7 @@ export default function FloatingBubbles() {
           }}
           initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
           animate={{
-            opacity: opacityKeys(bubble.opacity),
+            opacity: opacityKeys(bubble.opacity, bubble.pathX.length),
             scale: 1,
             x: bubble.pathX,
             y: bubble.pathY,
