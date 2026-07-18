@@ -58,67 +58,99 @@
   animation: cursor-blink 1s step-end infinite;
 }
 
-@keyframes liquid-flow {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes liquid-shift {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
+/* Living liquid blobs — organic morphing shapes behind the glass card content */
+@keyframes blob-morph {
+  0% {
+    border-radius: 58% 42% 55% 45% / 52% 58% 42% 48%;
   }
   33% {
-    transform: translate(30px, -30px) rotate(120deg);
+    border-radius: 45% 55% 62% 38% / 60% 40% 58% 42%;
   }
   66% {
-    transform: translate(-20px, 20px) rotate(240deg);
+    border-radius: 63% 37% 42% 58% / 44% 61% 39% 56%;
+  }
+  100% {
+    border-radius: 40% 60% 48% 52% / 56% 44% 62% 38%;
   }
 }
 
-.liquid-glass {
-  position: relative;
-  overflow: hidden;
+@keyframes blob-drift-a {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(22%, 14%) rotate(28deg) scale(1.18);
+  }
+  100% {
+    transform: translate(-10%, 24%) rotate(-18deg) scale(0.92);
+  }
 }
 
-.liquid-glass::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    var(--liquid-color, rgba(245, 240, 225, 0.08)) 50%,
-    transparent 70%
-  );
-  animation: liquid-shift 25s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 1;
+@keyframes blob-drift-b {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-18%, -20%) rotate(-24deg) scale(1.12);
+  }
+  100% {
+    transform: translate(12%, -8%) rotate(16deg) scale(1.05);
+  }
 }
 
-.liquid-glass::after {
-  content: '';
+@keyframes blob-drift-c {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(16%, -18%) rotate(20deg) scale(0.9);
+  }
+  100% {
+    transform: translate(-14%, 10%) rotate(-12deg) scale(1.15);
+  }
+}
+
+.liquid-blob {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    var(--liquid-color-light, rgba(245, 240, 225, 0.04)) 0%,
-    transparent 25%,
-    transparent 75%,
-    var(--liquid-color-light, rgba(245, 240, 225, 0.04)) 100%
-  );
-  background-size: 200% 200%;
-  animation: liquid-flow 18s ease-in-out infinite;
   pointer-events: none;
-  opacity: 0.7;
-  z-index: 1;
+  filter: blur(28px);
+  will-change: transform, border-radius;
+}
+
+.liquid-blob-1 {
+  width: 45%;
+  height: 90%;
+  top: -15%;
+  left: -8%;
+  animation:
+    blob-morph 17s ease-in-out infinite alternate,
+    blob-drift-a 29s ease-in-out infinite alternate;
+}
+
+.liquid-blob-2 {
+  width: 40%;
+  height: 85%;
+  bottom: -20%;
+  right: -6%;
+  animation:
+    blob-morph 13s ease-in-out infinite alternate-reverse,
+    blob-drift-b 23s ease-in-out infinite alternate;
+  animation-delay: -7s, -11s;
+}
+
+.liquid-blob-3 {
+  width: 28%;
+  height: 60%;
+  top: 25%;
+  left: 40%;
+  animation:
+    blob-morph 19s ease-in-out infinite alternate,
+    blob-drift-c 31s ease-in-out infinite alternate-reverse;
+  animation-delay: -13s, -5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-blob {
+    animation: none;
+  }
 }

@@ -576,6 +576,21 @@ export default function About() {
             : '0 8px 32px 0 rgba(48, 87, 122, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
         }}
       >
+        {/* Living liquid blobs behind the content */}
+        <div className="absolute inset-0 overflow-hidden rounded-3xl" aria-hidden="true">
+          {[1, 2, 3].map((n) => (
+            <div
+              key={n}
+              className={`liquid-blob liquid-blob-${n}`}
+              style={{
+                background: isDark
+                  ? 'radial-gradient(circle at 35% 35%, rgba(245, 240, 225, 0.14), rgba(245, 240, 225, 0.02) 70%)'
+                  : 'radial-gradient(circle at 35% 35%, rgba(251, 254, 249, 0.22), rgba(251, 254, 249, 0.04) 70%)',
+              }}
+            />
+          ))}
+        </div>
+
         {/* Navigation Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-6 relative z-10 flex-shrink-0">
           {tabs.map((tab) => (
@@ -673,7 +688,7 @@ export default function About() {
             </h3>
           )}
 
-          <div key={activeTab} className="flex-1 overflow-hidden">
+          <div key={activeTab} className="flex-1 overflow-hidden relative z-10">
             <AnimatePresence initial={false} mode="wait" custom={direction}>
               {renderContent()}
             </AnimatePresence>
