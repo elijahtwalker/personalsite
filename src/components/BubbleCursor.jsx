@@ -72,19 +72,19 @@ export default function BubbleCursor() {
   }, [mx, my]);
 
   const bubbleBorder = isDark
-    ? 'rgba(85, 107, 63, 0.65)'
+    ? 'rgba(245, 240, 225, 0.65)'
     : 'rgba(251, 254, 249, 0.55)';
 
   const bubbleBg = isDark
-    ? 'radial-gradient(circle at 32% 30%, rgba(85, 107, 63, 0.18), rgba(85, 107, 63, 0.04) 70%)'
+    ? 'radial-gradient(circle at 32% 30%, rgba(245, 240, 225, 0.18), rgba(245, 240, 225, 0.04) 70%)'
     : 'radial-gradient(circle at 32% 30%, rgba(251, 254, 249, 0.22), rgba(251, 254, 249, 0.04) 70%)';
 
   const bubbleGlow = isDark
-    ? '0 0 14px rgba(85, 107, 63, 0.2), inset 0 1px 0 rgba(255,255,255,0.12)'
+    ? '0 0 14px rgba(245, 240, 225, 0.2), inset 0 1px 0 rgba(255,255,255,0.12)'
     : '0 0 14px rgba(251, 254, 249, 0.2), inset 0 1px 0 rgba(255,255,255,0.25)';
 
   const dotColor = isDark
-    ? 'rgba(85, 107, 63, 0.9)'
+    ? 'rgba(245, 240, 225, 0.9)'
     : 'rgba(251, 254, 249, 0.85)';
 
   return (
@@ -118,13 +118,13 @@ export default function BubbleCursor() {
           y: oy,
           translateX: '-50%',
           translateY: '-50%',
-          border: `1px solid ${hovering ? (isDark ? 'rgba(85, 107, 63, 0.9)' : 'rgba(251, 254, 249, 0.85)') : bubbleBorder}`,
+          border: `1px solid ${hovering ? (isDark ? 'rgba(245, 240, 225, 0.9)' : 'rgba(251, 254, 249, 0.85)') : bubbleBorder}`,
           background: bubbleBg,
           backdropFilter: 'blur(2px)',
           WebkitBackdropFilter: 'blur(2px)',
           boxShadow: hovering
             ? (isDark
-                ? '0 0 20px rgba(85, 107, 63, 0.35), inset 0 1px 0 rgba(255,255,255,0.15)'
+                ? '0 0 20px rgba(245, 240, 225, 0.35), inset 0 1px 0 rgba(255,255,255,0.15)'
                 : '0 0 20px rgba(251, 254, 249, 0.35), inset 0 1px 0 rgba(255,255,255,0.3)')
             : bubbleGlow,
         }}

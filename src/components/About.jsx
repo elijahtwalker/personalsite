@@ -1,6 +1,48 @@
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
+
+const rotatingPhrases = [
+  'full-stack engineer',
+  'builder of thoughtful software',
+  'product architect at heart',
+  'engineer chasing complex problems',
+  'perpetual learner',
+  'engineer who ships',
+];
+
+function TypingPhrase() {
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [text, setText] = useState('');
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const phrase = rotatingPhrases[phraseIndex];
+    let timeout;
+    if (!deleting) {
+      if (text.length < phrase.length) {
+        timeout = setTimeout(() => setText(phrase.slice(0, text.length + 1)), 65);
+      } else {
+        timeout = setTimeout(() => setDeleting(true), 2200);
+      }
+    } else if (text.length > 0) {
+      timeout = setTimeout(() => setText(phrase.slice(0, text.length - 1)), 35);
+    } else {
+      setDeleting(false);
+      setPhraseIndex((phraseIndex + 1) % rotatingPhrases.length);
+    }
+    return () => clearTimeout(timeout);
+  }, [text, deleting, phraseIndex]);
+
+  const article = /^[aeiou]/i.test(rotatingPhrases[phraseIndex]) ? 'an' : 'a';
+
+  return (
+    <>
+      {article}{' '}
+      <span>{text}</span>.<span className="typing-cursor" aria-hidden="true">|</span>
+    </>
+  );
+}
 
 export default function About() {
   const { isDark } = useTheme();
@@ -149,25 +191,14 @@ export default function About() {
               <div className="flex-1 space-y-4">
                 <p className={`text-base md:text-xl transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  Hi, I'm Elijah. I'm a Software Engineer.
+                  Hi, I'm Elijah. I'm <TypingPhrase />
                 </p>
-                <ul className={`space-y-2 text-base md:text-xl transition-colors duration-300
+                <p className={`text-base md:text-xl transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                  <li className="flex items-start">
-                    <span className="mr-2 mt-3 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
-                    <span>Software Engineering Intern @ Microsoft</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2 mt-3 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
-                    <span>
-                      Computer Science @ <span className="italic">The University of Texas at Dallas</span>
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2 mt-3 w-2 h-2 rounded-full bg-current flex-shrink-0"></span>
-                    <span>Background in Full-Stack Development & Machine Learning</span>
-                  </li>
-                </ul>
+                  I obsess over building meaningful, product-focused software for users worldwide.
+                  I'm a senior computer science student with experience across the
+                  technology, finance, and aerospace sectors.
+                </p>
                 <p className={`text-base md:text-xl transition-colors duration-300
                   ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
                   Interested in connecting? Say <a href="mailto:hello@elijahwalker.me" className="hover:underline">hello@elijahwalker.me</a>
@@ -185,7 +216,7 @@ export default function About() {
                     alt="Elijah Walker"
                     className="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover shadow-lg border-4 transition-all duration-300 hover:scale-105"
                     style={{
-                      borderColor: isDark ? 'rgba(85, 107, 63, 0.5)' : '#355070'
+                      borderColor: isDark ? 'rgba(245, 240, 225, 0.5)' : '#355070'
                     }}
                   />
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent to-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
@@ -327,7 +358,7 @@ export default function About() {
                               alt={item.title}
                               className={`object-contain pointer-events-none transition-all duration-300 ${item.title === 'VP of Membership' ? 'w-12 h-12 md:w-24 md:h-24' : 'w-9 h-9 md:w-16 md:h-16'}`}
                               style={isDark
-                                ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
+                                ? { filter: 'brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(200%) hue-rotate(358deg) brightness(103%) contrast(93%)' }
                                 : {}
                               }
                             />
@@ -377,7 +408,7 @@ export default function About() {
                               alt={involvementItems[selectedInvolvement].title}
                               className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-10 h-10' : 'w-7 h-7'}`}
                               style={isDark
-                                ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
+                                ? { filter: 'brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(200%) hue-rotate(358deg) brightness(103%) contrast(93%)' }
                                 : {}
                               }
                             />
@@ -438,7 +469,7 @@ export default function About() {
                             alt={involvementItems[selectedInvolvement].title}
                             className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-20 h-20' : 'w-14 h-14'}`}
                             style={isDark
-                              ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
+                              ? { filter: 'brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(200%) hue-rotate(358deg) brightness(103%) contrast(93%)' }
                               : {}
                             }
                           />
@@ -534,14 +565,14 @@ export default function About() {
         transition={{ duration: 0.8 }}
         className={`max-w-6xl mx-auto rounded-3xl px-8 py-4 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative z-10 flex flex-col h-auto md:h-[350px]
           ${isDark
-            ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(85,107,63,0.1)]'
+            ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(245,240,225,0.1)]'
             : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
           }`}
         style={{
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           boxShadow: isDark
-            ? '0 8px 32px 0 rgba(85, 107, 63, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)'
+            ? '0 8px 32px 0 rgba(245, 240, 225, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)'
             : '0 8px 32px 0 rgba(48, 87, 122, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
         }}
       >

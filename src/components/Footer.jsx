@@ -5,7 +5,6 @@ export default function Footer() {
 
   const iconClass = `transition-colors duration-300 ${isDark ? 'text-mint_green hover:text-mint_green/80' : 'text-baby_powder hover:text-baby_powder/70'}`;
   const textClass = `transition-colors duration-300 ${isDark ? 'text-mint_green/70' : 'text-baby_powder/60'}`;
-  const arrowClass = `transition-all duration-200 hover:scale-110 transform ${isDark ? 'text-mint_green hover:text-mint_green/80' : 'text-baby_powder hover:text-baby_powder/70'}`;
 
   return (
     <footer className={`pt-16 pb-8 md:pt-20 md:pb-10 transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
@@ -33,27 +32,48 @@ export default function Footer() {
         {/* Center: copyright */}
         <p className={`${textClass} text-center text-xs md:text-sm tracking-widest uppercase`}>&copy; 2026 Elijah Walker</p>
 
-        {/* Right: webring bubble */}
+        {/* Right: webring */}
         <div className="flex justify-end">
-          <div className={`flex items-center gap-2 md:gap-3 px-3 py-1.5 md:px-4 md:py-2 rounded-full backdrop-blur-sm transition-colors duration-300
-            ${isDark
-              ? 'bg-mint_green/15 border border-mint_green/50'
-              : 'bg-baby_powder/20 border border-baby_powder/40'
-            }`}
-          >
-            <a href="https://cs.utdring.com/#elijahwalker.me?nav=prev" target="_blank" rel="noopener noreferrer" className={`text-xs md:text-sm ${arrowClass}`}>←</a>
-            <a href="https://cs.utdring.com/#elijahwalker.me" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transform transition-transform duration-200">
+          <div className={`flex items-center gap-1 md:gap-1.5 transition-colors duration-300 ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+            <a
+              href="https://cs.utdring.com/#elijahwalker.me?nav=prev"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Previous site in the UTD CS webring"
+              className="p-1 opacity-50 hover:opacity-100 transition-all duration-200 hover:-translate-x-0.5"
+            >
+              <svg className="h-3 w-3 md:h-3.5 md:w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </a>
+            <a
+              href="https://cs.utdring.com/#elijahwalker.me"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="UTD CS Webring"
+              className="px-0.5 opacity-70 hover:opacity-100 transition-opacity duration-200"
+            >
               <img
                 src="https://cs.utdring.com/icon.white.svg"
                 alt="UTD CS Webring"
                 className="w-4 h-auto md:w-5"
                 style={isDark
-                  ? { filter: 'brightness(0) saturate(100%) invert(38%) sepia(15%) saturate(900%) hue-rotate(62deg) brightness(92%) contrast(85%)' }
-                  : { filter: 'brightness(0) saturate(100%) invert(97%) sepia(5%) saturate(300%) hue-rotate(60deg) brightness(110%) contrast(95%)' }
+                  ? { filter: 'brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(200%) hue-rotate(358deg) brightness(103%) contrast(93%)' }
+                  : {}
                 }
               />
             </a>
-            <a href="https://cs.utdring.com/#elijahwalker.me?nav=next" target="_blank" rel="noopener noreferrer" className={`text-xs md:text-sm ${arrowClass}`}>→</a>
+            <a
+              href="https://cs.utdring.com/#elijahwalker.me?nav=next"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Next site in the UTD CS webring"
+              className="p-1 opacity-50 hover:opacity-100 transition-all duration-200 hover:translate-x-0.5"
+            >
+              <svg className="h-3 w-3 md:h-3.5 md:w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </a>
           </div>
         </div>
 

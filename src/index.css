@@ -45,6 +45,19 @@
   }
 }
 
+@keyframes cursor-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  50.01%, 100% {
+    opacity: 0;
+  }
+}
+
+.typing-cursor {
+  animation: cursor-blink 1s step-end infinite;
+}
+
 @keyframes liquid-flow {
   0%, 100% {
     background-position: 0% 50%;
@@ -81,7 +94,7 @@
   background: linear-gradient(
     45deg,
     transparent 30%,
-    var(--liquid-color, rgba(85, 107, 63, 0.08)) 50%,
+    var(--liquid-color, rgba(245, 240, 225, 0.08)) 50%,
     transparent 70%
   );
   animation: liquid-shift 25s ease-in-out infinite;
@@ -98,10 +111,10 @@
   bottom: 0;
   background: linear-gradient(
     135deg,
-    var(--liquid-color-light, rgba(85, 107, 63, 0.04)) 0%,
+    var(--liquid-color-light, rgba(245, 240, 225, 0.04)) 0%,
     transparent 25%,
     transparent 75%,
-    var(--liquid-color-light, rgba(85, 107, 63, 0.04)) 100%
+    var(--liquid-color-light, rgba(245, 240, 225, 0.04)) 100%
   );
   background-size: 200% 200%;
   animation: liquid-flow 18s ease-in-out infinite;
