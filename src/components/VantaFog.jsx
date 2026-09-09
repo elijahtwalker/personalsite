@@ -11,9 +11,9 @@ const PALETTES = {
     baseColor: 0x5381aa,
   },
   dark: {
-    highlightColor: 0xffffff,
-    midtoneColor: 0x9698a2,
-    lowlightColor: 0x35383c,
+    highlightColor: 0x3c3c3c,
+    midtoneColor: 0x313131,
+    lowlightColor: 0x2a2a2a,
     baseColor: 0x000000,
   },
 };
