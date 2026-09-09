@@ -5,10 +5,10 @@ import { useTheme } from '../context/ThemeContext';
 
 const PALETTES = {
   light: {
-    highlightColor: 0xafbfde,
-    midtoneColor: 0x5083ff,
-    lowlightColor: 0x8aa2be,
-    baseColor: 0xebebff,
+    highlightColor: 0xffffff,
+    midtoneColor: 0xa8cee1,
+    lowlightColor: 0x788cc8,
+    baseColor: 0x5381aa,
   },
   dark: {
     highlightColor: 0xffffff,
