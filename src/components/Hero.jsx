@@ -7,8 +7,7 @@ export default function Hero() {
   const { isDark } = useTheme();
 
   return (
-    <section id="home" className={`relative h-screen overflow-hidden transition-colors duration-300
-      ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
+    <section id="home" className="relative h-screen overflow-hidden">
       
       {/* Main content - Name */}
       <div className="absolute bottom-12 left-12 z-10">

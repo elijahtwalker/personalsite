@@ -7,7 +7,7 @@ export default function Footer() {
   const textClass = `transition-colors duration-300 ${isDark ? 'text-mint_green/70' : 'text-baby_powder/60'}`;
 
   return (
-    <footer className={`pt-16 pb-8 md:pt-20 md:pb-10 transition-colors duration-300 ${isDark ? 'bg-eerie_black' : 'bg-yinmn_blue'}`}>
+    <footer className="relative pt-16 pb-8 md:pt-20 md:pb-10">
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-3 items-center">
 
         {/* Left: social icons */}

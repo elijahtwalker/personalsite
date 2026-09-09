@@ -1,194 +1,223 @@
-import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { gsap } from 'gsap';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { useTheme } from '../context/ThemeContext';
 
-/* Catmull-Rom spline: rounds the straight polyline legs between waypoints
-   into a continuous curve so bubbles never visibly change direction. */
-function catmullRom(pts, segs) {
-  if (pts.length < 3) return pts;
-  const out = [];
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i - 1] || pts[i];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[i + 2] || p2;
-    for (let s = 0; s < segs; s++) {
-      const t = s / segs;
-      const t2 = t * t;
-      const t3 = t2 * t;
-      out.push([
-        0.5 * (2 * p1[0] + (p2[0] - p0[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (3 * p1[0] - p0[0] - 3 * p2[0] + p3[0]) * t3),
-        0.5 * (2 * p1[1] + (p2[1] - p0[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (3 * p1[1] - p0[1] - 3 * p2[1] + p3[1]) * t3),
-      ]);
-    }
-  }
-  out.push(pts[pts.length - 1]);
-  return out;
-}
+gsap.registerPlugin(MotionPathPlugin);
 
-function lerp(pts, numOut) {
-  const dist = [0];
-  for (let i = 1; i < pts.length; i++) {
-    const dx = pts[i][0] - pts[i - 1][0];
-    const dy = pts[i][1] - pts[i - 1][1];
-    dist.push(dist[i - 1] + Math.sqrt(dx * dx + dy * dy));
-  }
-  const total = dist[dist.length - 1];
-  const out = [];
-  for (let k = 0; k < numOut; k++) {
-    const target = (k / (numOut - 1)) * total;
-    let j = 1;
-    while (j < dist.length - 1 && dist[j] < target) j++;
-    const seg = dist[j] - dist[j - 1];
-    const f = seg > 0 ? (target - dist[j - 1]) / seg : 0;
-    out.push([
-      pts[j - 1][0] + (pts[j][0] - pts[j - 1][0]) * f,
-      pts[j - 1][1] + (pts[j][1] - pts[j - 1][1]) * f,
-    ]);
-  }
-  return out;
-}
+// Normalized page coordinates: x across the viewport, y down the full page.
+// These are the site's original waypoints converted to absolute screen space.
+// The original positioned each bubble near the page bottom and translated it
+// by -y * 0.95 * pageH, so its absolute y is (1 - 0.95 * y) and the list is
+// already top-to-bottom in order. It sweeps right along the top, curls down
+// into the hook on the right, wiggles back up behind the content card, then
+// unwinds left and down to the bottom.
+const CURVE = [
+  [0.00, 0.050],
+  [0.08, 0.079],
+  [0.16, 0.107],
+  [0.24, 0.136],
+  [0.32, 0.164],
+  [0.40, 0.202],
+  [0.48, 0.240],
+  [0.56, 0.288],
+  [0.63, 0.335],
+  [0.69, 0.392],
+  [0.73, 0.459],
+  [0.76, 0.539],
+  [0.77, 0.628],
+  [0.76, 0.710],
+  [0.73, 0.770],
+  [0.68, 0.794],
+  [0.62, 0.760],
+  [0.55, 0.707],
+  [0.48, 0.662],
+  [0.40, 0.630],
+  [0.32, 0.613],
+  [0.24, 0.616],
+  [0.17, 0.636],
+  [0.11, 0.684],
+  [0.07, 0.762],
+  [0.03, 0.867],
+  [0.00, 1.000],
+];
+
+// Widens the curve on desktop so the hook reaches further right; narrows it
+// on mobile so it still fits.
+const X_SCALE = { desktop: 1.16, mobile: 0.82 };
 
 export default function FloatingBubbles() {
   const { isDark } = useTheme();
+  const containerRef = useRef(null);
+  const ctxRef = useRef(null);
 
+  // Only the per-bubble traits that don't depend on layout. Paths are built
+  // in the layout effect, where the page has a real measured height.
   const bubbles = useMemo(() => {
-    const vw = typeof window !== 'undefined' ? window.innerWidth : 1400;
-    const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
-    const pageH = vh * 2.5;
-    const N = 64;
-    const isMobile = vw < 768;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const count = isMobile ? 42 : 54;
+    const minSize = isMobile ? 10 : 14;
+    const sizeSpan = isMobile ? 80 : 165;
 
-    const desktopWaypoints = [
-      [0.00, 1.00],
-      [0.08, 0.97],
-      [0.16, 0.94],
-      [0.24, 0.91],
-      [0.32, 0.88],
-      [0.40, 0.84],
-      [0.48, 0.80],
-      [0.56, 0.75],
-      [0.63, 0.70],
-      [0.69, 0.64],
-      [0.73, 0.57],
-      [0.76, 0.49],
-      [0.77, 0.41],
-      [0.76, 0.34],
-      [0.73, 0.29],
-      [0.68, 0.27],
-      [0.62, 0.30],
-      [0.55, 0.35],
-      [0.48, 0.40],
-      [0.40, 0.44],
-      [0.32, 0.46],
-      [0.24, 0.45],
-      [0.17, 0.41],
-      [0.11, 0.34],
-      [0.07, 0.25],
-      [0.03, 0.14],
-      [0.00, 0.00],
-    ];
-
-    const mobileWaypoints = [
-      [0.00, 0.00],
-      [0.15, 0.08],
-      [0.30, 0.16],
-      [0.65, 0.25],
-      [0.75, 0.35],
-      [0.90, 0.46],
-      [0.28, 0.56],
-      [0.22, 0.66],
-      [0.14, 0.76],
-      [0.02, 0.86],
-      [0.00, 0.96],
-    ];
-
-    const baseWaypoints = isMobile ? mobileWaypoints : desktopWaypoints;
-    const bubbleCount = isMobile ? 60 : 70;
-
-    return Array.from({ length: bubbleCount }, (_, i) => {
-      const size = isMobile ? Math.random() * 72 + 24 : Math.random() * 150 + 50;
-      const rx = (Math.random() - 0.5) * vw * 0.06;
-      const ry = (Math.random() - 0.5) * pageH * 0.02;
-
-      const scaled = baseWaypoints.map(([x, y]) => [x * vw, y * pageH * 0.95]);
-      // Smooth the polyline into a spline, then resample evenly by arc length
-      // so speed along the path stays constant between keyframes.
-      const pts = lerp(catmullRom(scaled, 12), N);
-
-      // Per-bubble sideways sway layered on the path for an underwater feel.
-      const swayAmp = (isMobile ? 5 : 8) + Math.random() * (isMobile ? 7 : 12);
-      const swayPhase = Math.random() * Math.PI * 2;
-      const swayCycles = 2 + Math.random() * 2;
-      const sway = (i) => Math.sin(swayPhase + (i / (N - 1)) * Math.PI * 2 * swayCycles) * swayAmp;
-
-      const pathX = isMobile
-        ? (() => {
-            const x0 = pts[0][0];
-            return pts.map(([x], i) =>
-              Math.min(vw * 0.72, Math.max(-size * 0.3, x - x0 + rx * 0.1 + sway(i)))
-            );
-          })()
-        : pts.map(([x], i) => x + rx + sway(i));
-
-      const pathY = isMobile
-        ? (() => {
-            const y0 = pts[0][1];
-            return pts.map(([, y]) => y - y0 + ry * 0.1);
-          })()
-        : pts.map(([, y]) => -y + ry);
-
-      return {
-        id: i,
-        size,
-        delay: i * 0.4,
-        duration: Math.random() * 8 + 16,
-        startX: isMobile ? Math.random() * 30 : Math.random() * 150,
-        startY: isMobile ? Math.random() * 40 - 100 : pageH - 100 - Math.random() * 400,
-        opacity: Math.random() * 0.17 + 0.03,
-        pathX,
-        pathY,
-      };
-    });
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      // Skewed so most bubbles stay small and only a few swell to full size.
+      size: minSize + Math.pow(Math.random(), 1.9) * sizeSpan,
+      level: Math.random() * 0.17 + 0.03,
+      duration: 18 + Math.random() * 10,
+      // Staggered so the last bubble launches about as one journey ends,
+      // keeping the stream continuous without bunching.
+      delay: i * (isMobile ? 0.57 : 0.43),
+      jx: Math.random() - 0.5,
+      jy: Math.random() - 0.5,
+      swayAmp: (isMobile ? 5 : 8) + Math.random() * (isMobile ? 7 : 12),
+      swayDur: 4 + Math.random() * 3.5,
+    }));
   }, []);
 
-  // Cosine-eased fade in/out over the first and last 12% of the journey,
-  // sized to however many keyframes the path has.
-  const opacityKeys = (o, n) =>
-    Array.from({ length: n }, (_, i) => {
-      const edge = Math.min(i / (n - 1), 1 - i / (n - 1));
-      const fade = Math.min(1, edge / 0.12);
-      return o * ((1 - Math.cos(fade * Math.PI)) / 2);
-    });
+  useLayoutEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const els = gsap.utils.toArray('.bubble', containerRef.current);
+
+    // Dark mode is clouds only. Pop whatever is on screen, then stay empty.
+    if (isDark) {
+      const running = ctxRef.current;
+      ctxRef.current = null;
+
+      // Nothing was running, so the page loaded straight into dark mode and
+      // there is nothing to pop.
+      if (!running) {
+        gsap.set(els, { opacity: 0 });
+        return;
+      }
+
+      const live = els.filter((el) => Number(gsap.getProperty(el, 'opacity')) > 0.02);
+      // kill() rather than revert() so each bubble pops where it currently is
+      // instead of snapping back to the start of its path first.
+      running.kill();
+      gsap.set(els.filter((el) => !live.includes(el)), { opacity: 0 });
+
+      // The pop scales the inner element and fades the outer one, leaving the
+      // inner's opacity alone since React owns that as the brightness level.
+      gsap.timeline()
+        .to(live.map((el) => el.firstElementChild), {
+          scale: 1.75,
+          duration: 0.16,
+          ease: 'power2.out',
+          stagger: { each: 0.004, from: 'random' },
+        }, 0)
+        .to(live, {
+          opacity: 0,
+          duration: 0.16,
+          ease: 'power1.in',
+          stagger: { each: 0.004, from: 'random' },
+        }, 0);
+
+      return;
+    }
+
+    // Back to light: clear anything the pop left behind, then restart.
+    ctxRef.current?.kill();
+    gsap.set(els, { opacity: 0, x: 0, y: 0 });
+    gsap.set(els.map((el) => el.firstElementChild), { scale: 1, x: 0 });
+
+    const vw = window.innerWidth;
+    const pageH = containerRef.current.offsetHeight;
+    const xScale = vw < 768 ? X_SCALE.mobile : X_SCALE.desktop;
+
+    ctxRef.current = gsap.context(() => {
+      gsap.utils.toArray('.bubble').forEach((el, i) => {
+        const b = bubbles[i];
+        if (!b) return;
+
+        // Jitter offsets the whole path so bubbles form a loose stream
+        // rather than a single-file line.
+        const ox = b.jx * vw * 0.11;
+        const oy = b.jy * pageH * 0.05;
+        const points = CURVE.map(([x, y]) => ({
+          x: x * xScale * vw + ox,
+          y: y * pageH + oy,
+        }));
+
+        gsap
+          .timeline({ repeat: -1, repeatDelay: 0.8, delay: b.delay })
+          .to(el, {
+            motionPath: { path: points, curviness: 1.25, resolution: 16 },
+            duration: b.duration,
+            ease: 'none',
+          }, 0)
+          .fromTo(el,
+            { opacity: 0 },
+            { opacity: 1, duration: b.duration * 0.12, ease: 'sine.inOut' }, 0)
+          .to(el, { opacity: 0, duration: b.duration * 0.12, ease: 'sine.inOut' },
+            b.duration * 0.88);
+
+        // Sway runs on the inner element so it layers on top of the path
+        // transform instead of fighting it for the same property.
+        gsap.fromTo(el.firstElementChild,
+          { x: -b.swayAmp },
+          {
+            x: b.swayAmp,
+            duration: b.swayDur,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+          }
+        ).progress(Math.random());
+      });
+    }, containerRef);
+  }, [bubbles, isDark]);
+
+  // Reverting on every theme change would wipe the bubbles' positions before
+  // the pop could play, so teardown is unmount-only.
+  useEffect(() => () => {
+    ctxRef.current?.revert();
+    ctxRef.current = null;
+  }, []);
+
+  const fill = isDark
+    ? `radial-gradient(circle at 32% 28%,
+        rgba(255, 253, 245, 1) 0%,
+        rgba(245, 240, 225, 0.7) 32%,
+        rgba(245, 240, 225, 0.28) 65%,
+        rgba(245, 240, 225, 0.06) 100%)`
+    : `radial-gradient(circle at 32% 28%,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(251, 254, 249, 0.6) 30%,
+        rgba(251, 254, 249, 0.25) 62%,
+        rgba(251, 254, 249, 0.05) 100%)`;
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+    <div
+      ref={containerRef}
+      className="absolute inset-0 overflow-hidden pointer-events-none z-[5]"
+    >
       {bubbles.map((bubble) => (
-        <motion.div
+        <div
           key={bubble.id}
-          className={`absolute rounded-full backdrop-blur-sm transition-colors duration-300
-            ${isDark ? 'bg-mint_green/90' : 'bg-baby_powder'}`}
+          className="bubble absolute top-0 left-0"
           style={{
             width: bubble.size,
             height: bubble.size,
-            left: bubble.startX,
-            top: bubble.startY,
+            // Centers the bubble on its path point.
+            marginLeft: -bubble.size / 2,
+            marginTop: -bubble.size / 2,
+            opacity: 0,
           }}
-          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-          animate={{
-            opacity: opacityKeys(bubble.opacity, bubble.pathX.length),
-            scale: 1,
-            x: bubble.pathX,
-            y: bubble.pathY,
-          }}
-          transition={{
-            duration: bubble.duration,
-            delay: bubble.delay,
-            repeat: Infinity,
-            repeatDelay: 0.8,
-            ease: 'linear',
-          }}
-        />
+        >
+          <div
+            className="w-full h-full rounded-full transition-opacity duration-300"
+            style={{
+              background: fill,
+              opacity: bubble.level * (isDark ? 2.2 : 1),
+              boxShadow: isDark
+                ? `inset 0 0 ${bubble.size * 0.14}px rgba(255, 255, 255, 0.4),
+                   0 0 ${bubble.size * 0.4}px rgba(245, 240, 225, 0.3)`
+                : `inset 0 0 ${bubble.size * 0.12}px rgba(255, 255, 255, 0.3)`,
+            }}
+          />
+        </div>
       ))}
     </div>
   );
