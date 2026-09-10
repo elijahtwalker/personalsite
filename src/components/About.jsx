@@ -1,6 +1,8 @@
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import headshot from '../images/headshot.png';
+import headshotDark from '../images/headshotDark.png';
 
 const rotatingPhrases = [
   'full-stack engineer',
@@ -79,10 +81,10 @@ export default function About() {
   ];
 
   const experienceItems = [
-    { title: 'Software Engineering Intern', subtitle: 'Microsoft • May 2026 - August 2026', description: '• Power BI Growth & Distribution Team working with React, TypeScript, C#, .NET, and LLMs.' },
-    { title: 'Software Engineering Intern', subtitle: 'Goldman Sachs • June 2025 - August 2025', description: '• Marquee Portfolio Analytics Team working with React, Redux, Python, Java, and Vert.X.' },
-    { title: 'Software Engineering Intern', subtitle: 'Bell Flight • June 2024 - August 2024', description: '• Innovation Flight Controls Software Team working with Python, DXL, and Azure DevOps.' },
-    { title: 'Research Assistant', subtitle: 'CVMC Lab • August 2024 - November 2024', description: '• Stable Diffusion Model Development for Enhanced Audio Synthesis for Video Generation.' }
+    { title: 'Software Engineering Intern', subtitle: 'Microsoft • May 2026 - August 2026', description: 'Power BI Growth & Distribution Team working with React, TypeScript, C#, .NET, and LLMs.' },
+    { title: 'Software Engineering Intern', subtitle: 'Goldman Sachs • June 2025 - August 2025', description: 'Marquee Portfolio Analytics Team working with React, Redux, Python, Java, and Vert.X.' },
+    { title: 'Software Engineering Intern', subtitle: 'Bell Flight • June 2024 - August 2024', description: 'Innovation Flight Controls Software Team working with Python, DXL, and Azure DevOps.' },
+    { title: 'Research Assistant', subtitle: 'CVMC Lab • August 2024 - November 2024', description: 'Stable Diffusion Model Development for Enhanced Audio Synthesis for Video Generation.' }
   ];
 
   const projectItems = [
@@ -212,11 +214,11 @@ export default function About() {
                   onMouseLeave={handlePhotoMouseLeave}
                 >
                   <img
-                    src="..//images/headshot.JPG"
+                    src={isDark ? headshotDark : headshot}
                     alt="Elijah Walker"
                     className="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover shadow-lg border-4 transition-all duration-300 hover:scale-105"
                     style={{
-                      borderColor: isDark ? 'rgba(245, 240, 225, 0.5)' : '#355070'
+                      borderColor: isDark ? 'rgba(245, 240, 225, 0.5)' : '#7b2d26'
                     }}
                   />
                   <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent to-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
@@ -240,7 +242,7 @@ export default function About() {
             <div className="grid gap-3 md:grid-cols-2">
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
-                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-falu_red/30'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
                     {item.title}
@@ -273,7 +275,7 @@ export default function About() {
             <div className="grid gap-3 md:grid-cols-2">
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
-                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-falu_red/30'}`}>
                   <div className="flex items-center gap-2">
                     <h4 className={`font-semibold text-lg transition-colors duration-300
                       ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -348,8 +350,8 @@ export default function About() {
                           whileTap={{ scale: 0.95 }}
                           className={`w-20 h-20 md:w-32 md:h-32 rounded-full flex flex-col items-center justify-center text-center p-2 md:p-3 cursor-pointer backdrop-blur-sm transition-colors duration-300
                             ${isDark
-                              ? 'bg-mint_green/15 border border-mint_green/50 hover:bg-mint_green/25'
-                              : 'bg-baby_powder/20 border border-baby_powder/40 hover:bg-baby_powder/30'
+                              ? 'bg-eerie_black/60 border border-mint_green/50 hover:bg-eerie_black/70'
+                              : 'bg-falu_red-600/80 border border-baby_powder/40 hover:bg-falu_red-600/90'
                             }`}
                         >
                           {item.icon ? (
@@ -398,8 +400,8 @@ export default function About() {
                           whileTap={{ scale: 0.95 }}
                           className={`w-16 h-16 rounded-full flex items-center justify-center p-2 flex-shrink-0 cursor-pointer backdrop-blur-sm transition-colors duration-300
                             ${isDark
-                              ? 'bg-mint_green/20 border-2 border-mint_green/60'
-                              : 'bg-baby_powder/25 border-2 border-baby_powder/50'
+                              ? 'bg-eerie_black/60 border-2 border-mint_green/60'
+                              : 'bg-falu_red-600/80 border-2 border-baby_powder/50'
                             }`}
                         >
                           {involvementItems[selectedInvolvement].icon ? (
@@ -459,8 +461,8 @@ export default function About() {
                         whileTap={{ scale: 0.95 }}
                         className={`w-28 h-28 rounded-full flex flex-col items-center justify-center text-center p-2 flex-shrink-0 cursor-pointer backdrop-blur-sm transition-colors duration-300 ml-2
                           ${isDark
-                            ? 'bg-mint_green/20 border-2 border-mint_green/60 hover:bg-mint_green/30'
-                            : 'bg-baby_powder/25 border-2 border-baby_powder/50 hover:bg-baby_powder/35'
+                            ? 'bg-eerie_black/60 border-2 border-mint_green/60 hover:bg-eerie_black/70'
+                            : 'bg-falu_red-600/80 border-2 border-baby_powder/50 hover:bg-falu_red-600/90'
                           }`}
                       >
                         {involvementItems[selectedInvolvement].icon ? (
@@ -535,7 +537,7 @@ export default function About() {
             <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-4 rounded-lg transition-colors duration-300 min-h-[120px] flex flex-col justify-center
-                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-yinmn_blue/30'}`}>
+                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-falu_red/30'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
                     {item.title}
@@ -566,14 +568,14 @@ export default function About() {
         className={`max-w-6xl mx-auto rounded-3xl px-8 py-4 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative z-10 flex flex-col h-auto md:h-[350px]
           ${isDark
             ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(245,240,225,0.1)]'
-            : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-yinmn_blue/20 shadow-[0_8px_32px_0_rgba(48,87,122,0.15)]'
+            : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-falu_red/20 shadow-[0_8px_32px_0_rgba(123,45,38,0.15)]'
           }`}
         style={{
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           boxShadow: isDark
             ? '0 8px 32px 0 rgba(245, 240, 225, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)'
-            : '0 8px 32px 0 rgba(48, 87, 122, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
+            : '0 8px 32px 0 rgba(123, 45, 38, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
         }}
       >
         {/* Living liquid blobs behind the content */}
@@ -601,7 +603,7 @@ export default function About() {
                 ${activeTab === tab.id
                   ? isDark
                     ? 'text-eerie_black shadow-lg border border-transparent'
-                    : 'text-yinmn_blue shadow-lg border border-transparent'
+                    : 'text-falu_red shadow-lg border border-transparent'
                   : isDark
                     ? 'text-mint_green hover:bg-mint_green/20 border border-mint_green/60'
                     : 'text-baby_powder hover:bg-baby_powder/20 border border-baby_powder/30'
@@ -638,7 +640,7 @@ export default function About() {
                 className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-[1.02]
                   ${isDark
                     ? 'bg-dark-950 border border-mint_green/60 text-mint_green hover:bg-dark-900'
-                    : 'bg-baby_powder/20 border border-yinmn_blue/30 text-baby_powder hover:bg-baby_powder/30'
+                    : 'bg-baby_powder/20 border border-falu_red/30 text-baby_powder hover:bg-baby_powder/30'
                   }`}
               >
                 Résumé

@@ -10,13 +10,24 @@
     font-family: 'EB Garamond', serif;
     @apply transition-colors duration-300;
   }
-  
+
+  /* Hide the page scrollbar; scrolling still works via wheel, touch, and keys. */
+  html,
+  body {
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
   html[data-theme='dark'] {
     @apply bg-eerie_black;
   }
 
   html[data-theme='light'] {
-    @apply bg-yinmn_blue;
+    @apply bg-falu_red;
   }
   
   body {

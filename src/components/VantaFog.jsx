@@ -5,15 +5,15 @@ import { useTheme } from '../context/ThemeContext';
 
 const PALETTES = {
   light: {
-    highlightColor: 0xffffff,
-    midtoneColor: 0xa8cee1,
-    lowlightColor: 0x788cc8,
-    baseColor: 0x5381aa,
+    highlightColor: 0x9b2828,
+    midtoneColor: 0xa42020,
+    lowlightColor: 0x5c0707,
+    baseColor: 0xffaaaa,
   },
   dark: {
-    highlightColor: 0x3c3c3c,
-    midtoneColor: 0x313131,
-    lowlightColor: 0x2a2a2a,
+    highlightColor: 0x616161,
+    midtoneColor: 0x4a4a4a,
+    lowlightColor: 0x373737,
     baseColor: 0x000000,
   },
 };
@@ -62,7 +62,7 @@ export default function VantaFog() {
       <div
         aria-hidden="true"
         className={`pointer-events-none fixed inset-0 z-0 transition-colors duration-300
-          ${isDark ? 'bg-eerie_black/[0.62]' : 'bg-yinmn_blue/75'}`}
+          ${isDark ? 'bg-eerie_black/[0.62]' : 'bg-falu_red/75'}`}
       />
     </>
   );
