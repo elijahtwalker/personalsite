@@ -4,6 +4,9 @@ import { useTheme } from '../context/ThemeContext';
 import headshot from '../images/headshot.png';
 import headshotDark from '../images/headshotDark.png';
 
+const GITHUB_ICON_PATH = 'M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z';
+const YOUTUBE_ICON_PATH = 'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z';
+
 const rotatingPhrases = [
   'full-stack engineer',
   'builder of thoughtful software',
@@ -81,13 +84,15 @@ export default function About() {
   ];
 
   const experienceItems = [
-    { title: 'Software Engineering Intern', subtitle: 'Microsoft • May 2026 - August 2026', description: 'Power BI Growth & Distribution Team working with React, TypeScript, C#, .NET, and LLMs.' },
-    { title: 'Software Engineering Intern', subtitle: 'Goldman Sachs • June 2025 - August 2025', description: 'Marquee Portfolio Analytics Team working with React, Redux, Python, Java, and Vert.X.' },
-    { title: 'Software Engineering Intern', subtitle: 'Bell Flight • June 2024 - August 2024', description: 'Innovation Flight Controls Software Team working with Python, DXL, and Azure DevOps.' },
+    { title: 'Software Engineer Intern', subtitle: 'Microsoft • May 2026 - August 2026', link: 'https://www.microsoft.com/en-us/power-platform/products/power-bi', description: 'Power BI Growth & Distribution Team working with React, TypeScript, C#, .NET, and LLMs.' },
+    { title: 'Software Engineer Intern', subtitle: 'Goldman Sachs • June 2025 - August 2025', link: 'https://marquee.gs.com/welcome/our-platform/portfolio-analytics', description: 'Marquee Portfolio Analytics Team working with React, Redux, Python, Java, and Vert.X.' },
+    { title: 'Software Engineer Intern', subtitle: 'Bell Flight • June 2024 - August 2024', description: 'Innovation Flight Controls Software Team working with Python, DXL, and Azure DevOps.' },
     { title: 'Research Assistant', subtitle: 'CVMC Lab • August 2024 - November 2024', description: 'Stable Diffusion Model Development for Enhanced Audio Synthesis for Video Generation.' }
   ];
 
   const projectItems = [
+    { title: 'Aria', subtitle: 'React, TypeScript, MCP Servers, & GitHub Copilot SDK', description: 'Proactive agentic diabetes companion on Microsoft Scout that turns live CGM data into a patient persona.', githubConfidential: true, youtube: 'https://youtu.be/6vSSxD9flPU' },
+    { title: 'Horizn', subtitle: 'Python, FastAPI, PostgreSQL, React, TypeScript, & Docker', description: 'Home buying platform with ZIP-level DFW housing price forecasts powered by a SARIMAX model service.', github: 'https://github.com/elijahtwalker/horizn' },
     // { title: 'Stilus', subtitle: 'React, TypeScript, Tailwind CSS, Python, Flask, & MongoDB', description: 'Digital wardrobe implementing TryOnDiffusion for outfit suggestions of amalgamated fashionable garments.', github: 'https://github.com/elijahtwalker/stilus' },
     // { title: 'Hover', subtitle: 'React, Python, Flask, & Tello API', description: 'Visualization of multidimensional objects utilizing heuristic flight algorithms on a Tello drone.', github: 'https://github.com/elijahtwalker/hover' },
     { title: 'Aerovista', subtitle: 'Python, PyTorch, OpenCV, Tello API, & NumPy', description: 'Leveraged Mask R-CNN and RTMDet-Ins-s to enhance aerial drone SAR performance using a Tello drone.', github: 'https://github.com/elijahtwalker/aerovista' },
@@ -249,7 +254,19 @@ export default function About() {
                   </h4>
                   <p className={`text-sm transition-colors duration-300 text-left
                     ${isDark ? 'text-mint_green/90' : 'text-baby_powder opacity-80'}`}>
-                    {item.subtitle}
+                    {item.link ? (
+                      <>
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline decoration-dotted underline-offset-2 hover:decoration-solid"
+                        >
+                          {item.subtitle.split(' • ')[0]}
+                        </a>
+                        {' • '}{item.subtitle.split(' • ')[1]}
+                      </>
+                    ) : item.subtitle}
                   </p>
                   <p className={`mt-2 transition-colors duration-300 text-left
                     ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
@@ -286,10 +303,44 @@ export default function About() {
                         href={item.github}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`${item.title} on GitHub`}
                         className={`transition-colors duration-300 hover:scale-110 transform ${isDark ? 'text-mint_green/70 hover:text-mint_green' : 'text-baby_powder/70 hover:text-baby_powder'}`}
                       >
                         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                          <path d={GITHUB_ICON_PATH} />
+                        </svg>
+                      </a>
+                    )}
+                    {/* The repo lived on a private company platform, so the icon stays visible but disabled. */}
+                    {item.githubConfidential && (
+                      <span
+                        tabIndex={0}
+                        aria-label="GitHub was on an internal confidential company platform"
+                        className={`group relative inline-flex cursor-not-allowed outline-none transition-colors duration-300
+                          ${isDark ? 'text-mint_green/30' : 'text-baby_powder/35'}`}
+                      >
+                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d={GITHUB_ICON_PATH} />
+                        </svg>
+                        <span
+                          aria-hidden="true"
+                          className={`pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-2 z-20 w-max max-w-[13rem] rounded-md px-2 py-1 text-xs leading-snug shadow-lg opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus:opacity-100
+                            ${isDark ? 'bg-mint_green text-eerie_black' : 'bg-baby_powder text-falu_red'}`}
+                        >
+                          GitHub was on an internal confidential company platform
+                        </span>
+                      </span>
+                    )}
+                    {item.youtube && (
+                      <a
+                        href={item.youtube}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${item.title} demo on YouTube`}
+                        className={`transition-colors duration-300 hover:scale-110 transform ${isDark ? 'text-mint_green/70 hover:text-mint_green' : 'text-baby_powder/70 hover:text-baby_powder'}`}
+                      >
+                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d={YOUTUBE_ICON_PATH} />
                         </svg>
                       </a>
                     )}
