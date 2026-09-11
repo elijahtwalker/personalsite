@@ -49,6 +49,10 @@ function TypingPhrase() {
   );
 }
 
+// Paste the hosted kickoff video's URL here once it is uploaded; the button on the ACM entry
+// appears only when this is set, so an empty value simply hides it.
+const ACM_KICKOFF_VIDEO_URL = '';
+
 // Each interest card gets its own shade so the spread reads as one deck with variation.
 const INTEREST_CARD_TONES = {
   light: ['#7b2d26', '#5c1a1b', '#932f2a', '#431216', '#a3413a', '#6a1f2a', '#852821', '#3a0f12'],
@@ -231,6 +235,37 @@ export default function About() {
 
   const [selectedInvolvement, setSelectedInvolvement] = useState(null);
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
+  // A bubble mid-flight to the centre of the row: { index, dx, dy }. The detail view takes over when it lands.
+  const [flyingBubble, setFlyingBubble] = useState(null);
+  const bubbleFlightTimer = useRef(null);
+
+  useEffect(() => () => clearTimeout(bubbleFlightTimer.current), []);
+
+  // Everything is measured from the clicked bubble itself rather than from refs, so the flight can
+  // never be skipped because a ref hasn't attached.
+  const handleBubbleSelect = (i, bubbleEl) => {
+    const box = bubbleEl?.closest('[data-involvement-box]');
+    const wrapper = bubbleEl?.parentElement;
+    if (!box || !wrapper) { setSelectedInvolvement(i); return; }
+
+    const boxRect = box.getBoundingClientRect();
+    const wrapperRect = wrapper.getBoundingClientRect();
+    // The bubble is mid-drift when it is clicked, so take that offset back out: the flight runs from
+    // where the bubble rests to the middle of the content area, not from wherever the drift had it.
+    // Guarded because DOMMatrix throws on 'none', which would abort the flight before it starts.
+    const transform = getComputedStyle(wrapper).transform;
+    const driftY = transform && transform !== 'none' ? new DOMMatrix(transform).m42 : 0;
+    setFlyingBubble({
+      index: i,
+      dx: boxRect.left + boxRect.width / 2 - (wrapperRect.left + wrapperRect.width / 2),
+      dy: boxRect.top + boxRect.height / 2 - (wrapperRect.top + wrapperRect.height / 2 - driftY),
+    });
+    clearTimeout(bubbleFlightTimer.current);
+    // Long enough for the bubble to land and pop before the detail view takes over. The flight state
+    // deliberately stays set: clearing it here would snap the bubble back and restart its drift while
+    // the row is still fading out, which reads as a jump. It is cleared on the way back instead.
+    bubbleFlightTimer.current = setTimeout(() => setSelectedInvolvement(i), 600);
+  };
 
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
@@ -283,7 +318,8 @@ export default function About() {
       bullets: [
         'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 190+ officers at the forefront of innovation and intellectual curiosity.'
       ],
-      photo: '/images/acmpres.JPG',
+      photos: ['/images/acmpres.JPG', '/images/acmpres2.jpg'],
+      video: ACM_KICKOFF_VIDEO_URL,
     },
     {
       title: 'Vice President of Membership',
@@ -292,7 +328,8 @@ export default function About() {
       bullets: [
         'Led the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheaded the rush process with 8 events and 300+ participants.'
       ],
-      photo: '/images/vpm.JPEG',
+      photos: ['/images/vpm.JPEG', '/images/vpm2.jpg'],
+      front: 0,
     },
     {
       title: 'Director of Research',
@@ -301,7 +338,8 @@ export default function About() {
       bullets: [
         'Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.'
       ],
-      photo: '/images/research.JPG',
+      photos: ['/images/research.JPG', '/images/research2.jpg'],
+      front: 0,
     },
   ];
 
@@ -340,6 +378,8 @@ export default function About() {
     setDirection(1);
     setPage(0);
     setSelectedInvolvement(null);
+    clearTimeout(bubbleFlightTimer.current);
+    setFlyingBubble(null);
     setActiveTab(tabId);
   };
 
@@ -395,7 +435,7 @@ export default function About() {
                   <img
                     src={isDark ? headshotDark : headshot}
                     alt="Elijah Walker"
-                    className="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover shadow-lg border-4 transition-all duration-300 hover:scale-105"
+                    className="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover object-top shadow-lg border-4 transition-all duration-300 hover:scale-105"
                     style={{
                       borderColor: isDark ? 'rgba(245, 240, 225, 0.5)' : '#7b2d26'
                     }}
@@ -421,7 +461,7 @@ export default function About() {
             <div className="grid gap-3 md:grid-cols-2">
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
-                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-falu_red/30'}`}>
+                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-baby_powder/60'}`}>
                   <h4 className={`font-semibold text-lg transition-colors duration-300 text-left
                     ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
                     {item.title}
@@ -466,7 +506,7 @@ export default function About() {
             <div className="grid gap-3 md:grid-cols-2">
               {currentPageItems.map((item, i) => (
                 <div key={i} className={`p-3 rounded-lg transition-colors duration-300 min-h-[120px]
-                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-falu_red/30'}`}>
+                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-baby_powder/60'}`}>
                   <div className="flex items-center gap-2">
                     <h4 className={`font-semibold text-lg transition-colors duration-300
                       ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
@@ -545,7 +585,13 @@ export default function About() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="h-full"
           >
-            <div className="relative flex items-center justify-center h-full min-h-[200px]">
+            {/* Bubbles sit centred in the space; an open entry starts at the top so it reads straight
+                under the heading instead of floating in the middle. */}
+            <div
+              data-involvement-box=""
+              className={`relative flex justify-center h-full min-h-[200px]
+                ${selectedInvolvement === null || flyingBubble !== null ? 'items-center' : 'items-start'}`}
+            >
               <AnimatePresence mode="wait">
                 {selectedInvolvement === null ? (
                   <motion.div
@@ -559,25 +605,62 @@ export default function About() {
                     {involvementItems.map((item, i) => {
                       const offsets = [12, -16, 6];
                       const amplitudes = [-10, -6, -12];
+                      const isFlying = flyingBubble?.index === i;
                       return (
-                        <motion.button
+                        // The drift lives on this wrapper so hovering, tapping or flying to the centre
+                        // never interrupts it.
+                        <motion.div
                           key={i}
-                          onClick={() => setSelectedInvolvement(i)}
+                          className={`relative transition-opacity duration-500 ease-out delay-75
+                            ${flyingBubble !== null && flyingBubble.index !== i ? 'opacity-0' : 'opacity-100'}`}
                           style={{ marginBottom: offsets[i] }}
-                          animate={{ y: [0, amplitudes[i], 0] }}
-                          transition={{
-                            duration: 2.5 + i * 0.3,
-                            delay: i * 0.6,
-                            repeat: Infinity,
-                            ease: 'easeInOut',
+                          animate={flyingBubble === null ? { y: [0, amplitudes[i], 0] } : { y: 0 }}
+                          transition={flyingBubble === null
+                            ? { duration: 2.5 + i * 0.3, delay: i * 0.6, repeat: Infinity, ease: 'easeInOut' }
+                            : { duration: 0.2 }}
+                        >
+                        {flyingBubble?.index === i && (
+                          <motion.span
+                            key="ring"
+                            aria-hidden="true"
+                            initial={{ opacity: 0.5, scale: 1 }}
+                            animate={{ opacity: 0, scale: 2 }}
+                            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.25 }}
+                            style={{ x: flyingBubble.dx, y: flyingBubble.dy }}
+                            className={`absolute inset-0 rounded-full pointer-events-none
+                              ${isDark ? 'bg-mint_green/30' : 'bg-baby_powder/40'}`}
+                          />
+                        )}
+                        {/* Keyed so React keeps matching this button when the ring appears beside it;
+                            without the key it remounts mid-flight and the animation restarts. */}
+                        <motion.button
+                          key="bubble"
+                          onClick={(e) => handleBubbleSelect(i, e.currentTarget)}
+                          style={{
+                            // The flight, its pop and the hover all ride on CSS transforms. Unlike Framer's
+                            // animations they carry on from wherever they are when React re-renders, which
+                            // otherwise restarted the travel and left the bubble crawling.
+                            // Always a real transform, never 'none': a transition needs a starting value
+                            // of the same shape to interpolate from, or the bubble snaps to the centre.
+                            transform: isFlying
+                              ? `translate(${flyingBubble.dx}px, ${flyingBubble.dy}px) scale(1.12)`
+                              : 'translate(0px, 0px) scale(1)',
+                            transition: isFlying
+                              // Gentle overshoot: enough to read as a landing, not a recoil.
+                              ? 'transform 560ms cubic-bezier(0.25, 1.1, 0.35, 1)'
+                              : 'transform 260ms ease-out',
+                            // A light three-stop wash with an off-centre highlight, so each bubble reads as a lit
+                            // sphere without any black in it. The angle shifts per bubble so the three don't look
+                            // stamped from one template.
+                            backgroundImage: isDark
+                              ? `radial-gradient(circle at 30% 22%, rgba(245,240,225,0.24), rgba(245,240,225,0) 62%),
+                                 linear-gradient(${140 + i * 20}deg, #525a67 0%, #3a4049 55%, #2a2f38 100%)`
+                              : `radial-gradient(circle at 30% 22%, rgba(255,255,255,0.45), rgba(255,255,255,0) 62%),
+                                 linear-gradient(${140 + i * 20}deg, #d2695c 0%, #b24137 55%, #8d3129 100%)`,
                           }}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                          className={`w-20 h-20 md:w-32 md:h-32 rounded-full flex flex-col items-center justify-center text-center p-2 md:p-3 cursor-pointer backdrop-blur-sm transition-colors duration-300
-                            ${isDark
-                              ? 'bg-eerie_black/60 border border-mint_green/50 hover:bg-eerie_black/70'
-                              : 'bg-falu_red-600/80 border border-baby_powder/40 hover:bg-falu_red-600/90'
-                            }`}
+                          className={`w-20 h-20 md:w-32 md:h-32 rounded-full flex flex-col items-center justify-center text-center p-2 md:p-3 cursor-pointer backdrop-blur-sm hover:brightness-110
+                            shadow-[0_10px_22px_-14px_rgba(58,15,18,0.55)]
+                            ${isFlying ? '' : `hover:-translate-y-2.5 hover:scale-[1.08] active:scale-95 ${i % 2 === 0 ? 'hover:-rotate-3' : 'hover:rotate-3'}`}`}
                         >
                           {item.icon ? (
                             <img
@@ -602,6 +685,7 @@ export default function About() {
                             </>
                           )}
                         </motion.button>
+                        </motion.div>
                       );
                     })}
                   </motion.div>
@@ -614,132 +698,65 @@ export default function About() {
                     transition={{ duration: 0.3 }}
                     className="w-full h-full overflow-y-auto md:overflow-visible"
                   >
-                    {/* Mobile: bubble left of text, photo below */}
-                    <div className="flex flex-col gap-3 md:hidden">
-                      <div className="flex items-center gap-3">
-                        <motion.button
-                          onClick={() => setSelectedInvolvement(null)}
-                          initial={{ x: -10, scale: 0.8 }}
-                          animate={{ x: 0, scale: 1 }}
-                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                          whileTap={{ scale: 0.95 }}
-                          className={`w-16 h-16 rounded-full flex items-center justify-center p-2 flex-shrink-0 cursor-pointer backdrop-blur-sm transition-colors duration-300
-                            ${isDark
-                              ? 'bg-eerie_black/60 border-2 border-mint_green/60'
-                              : 'bg-falu_red-600/80 border-2 border-baby_powder/50'
-                            }`}
-                        >
-                          {involvementItems[selectedInvolvement].icon ? (
-                            <img
-                              src={involvementItems[selectedInvolvement].icon}
-                              alt={involvementItems[selectedInvolvement].title}
-                              className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-10 h-10' : 'w-7 h-7'}`}
-                              style={isDark
-                                ? { filter: 'brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(200%) hue-rotate(358deg) brightness(103%) contrast(93%)' }
-                                : {}
-                              }
-                            />
-                          ) : (
-                            <span className={`text-xs font-bold leading-tight transition-colors duration-300 pointer-events-none
-                              ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                              {involvementItems[selectedInvolvement].title}
-                            </span>
-                          )}
-                        </motion.button>
-
-                        <div className="flex-1 min-w-0">
-                          <h4 className={`text-sm font-bold mb-0.5 transition-colors duration-300
-                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                            {involvementItems[selectedInvolvement].title}
-                          </h4>
-                          <p className={`text-xs mb-1 opacity-80 transition-colors duration-300
-                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                            {involvementItems[selectedInvolvement].subtitle}
-                          </p>
-                          <p className={`text-xs leading-relaxed transition-colors duration-300
-                            ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                            {involvementItems[selectedInvolvement].bullets[0]}
-                          </p>
-                        </div>
-                      </div>
-
-                      <motion.img
-                        src={involvementItems[selectedInvolvement].photo}
-                        alt={involvementItems[selectedInvolvement].title}
-                        onClick={() => setLightboxPhoto(involvementItems[selectedInvolvement].photo)}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.25 }}
-                        className={`w-full aspect-[3/2] rounded-lg object-cover border cursor-pointer transition-colors duration-300
-                          ${isDark ? 'border-mint_green/40' : 'border-baby_powder/30'}`}
-                      />
-                    </div>
-
-                    {/* Desktop: horizontal layout */}
-                    <div className="hidden md:flex items-center gap-6 w-full">
-                      <motion.button
-                        onClick={() => setSelectedInvolvement(null)}
-                        initial={{ x: 40, scale: 0.8 }}
-                        animate={{ x: 0, scale: 1 }}
-                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                        whileHover={{ scale: 1.08 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`w-28 h-28 rounded-full flex flex-col items-center justify-center text-center p-2 flex-shrink-0 cursor-pointer backdrop-blur-sm transition-colors duration-300 ml-2
-                          ${isDark
-                            ? 'bg-eerie_black/60 border-2 border-mint_green/60 hover:bg-eerie_black/70'
-                            : 'bg-falu_red-600/80 border-2 border-baby_powder/50 hover:bg-falu_red-600/90'
-                          }`}
-                      >
-                        {involvementItems[selectedInvolvement].icon ? (
-                          <img
-                            src={involvementItems[selectedInvolvement].icon}
-                            alt={involvementItems[selectedInvolvement].title}
-                            className={`object-contain pointer-events-none transition-all duration-300 ${involvementItems[selectedInvolvement].title === 'VP of Membership' ? 'w-20 h-20' : 'w-14 h-14'}`}
-                            style={isDark
-                              ? { filter: 'brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(200%) hue-rotate(358deg) brightness(103%) contrast(93%)' }
-                              : {}
-                            }
-                          />
-                        ) : (
-                          <span className={`text-base font-bold leading-tight transition-colors duration-300 pointer-events-none
-                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                            {involvementItems[selectedInvolvement].title}
-                          </span>
-                        )}
-                      </motion.button>
-
+                    <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-6 w-full text-left">
                       <motion.div
-                        initial={{ opacity: 0, x: 20 }}
+                        initial={{ opacity: 0, x: -12 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: 0.15, ease: 'easeOut' }}
-                        className="flex-1 min-w-0 flex items-center gap-4"
+                        transition={{ duration: 0.4, ease: 'easeOut' }}
+                        className="flex-1 min-w-0"
                       >
-                        <div className="flex-1 min-w-0">
-                          <h4 className={`text-lg font-bold mb-0.5 transition-colors duration-300
-                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                            {involvementItems[selectedInvolvement].title}
-                          </h4>
-                          <p className={`text-sm mb-1.5 opacity-80 transition-colors duration-300
-                            ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                            {involvementItems[selectedInvolvement].subtitle}
-                          </p>
-                          <p className={`text-base leading-relaxed transition-colors duration-300
-                            ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                            {involvementItems[selectedInvolvement].bullets[0]}
-                          </p>
-                        </div>
-                        <motion.img
-                          src={involvementItems[selectedInvolvement].photo}
-                          alt={involvementItems[selectedInvolvement].title}
-                          onClick={() => setLightboxPhoto(involvementItems[selectedInvolvement].photo)}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: 0.25 }}
-                          whileHover={{ scale: 1.03 }}
-                          className={`w-72 aspect-[3/2] rounded-lg object-cover border flex-shrink-0 cursor-pointer transition-colors duration-300
-                            ${isDark ? 'border-mint_green/40' : 'border-baby_powder/30'}`}
-                        />
+                        <h4 className={`text-base md:text-lg font-bold mb-0.5 transition-colors duration-300
+                          ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                          {involvementItems[selectedInvolvement].title}
+                        </h4>
+                        <p className={`text-xs md:text-sm mb-1.5 opacity-80 transition-colors duration-300
+                          ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+                          {involvementItems[selectedInvolvement].subtitle}
+                        </p>
+                        <p className={`text-xs md:text-base leading-relaxed transition-colors duration-300
+                          ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
+                          {involvementItems[selectedInvolvement].bullets[0]}
+                        </p>
+                        {involvementItems[selectedInvolvement].video && (
+                          <a
+                            href={involvementItems[selectedInvolvement].video}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className={`mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all duration-300 hover:scale-[1.03]
+                              ${isDark
+                                ? 'bg-dark-950 border border-mint_green/60 text-mint_green hover:bg-dark-900'
+                                : 'bg-baby_powder/20 border border-baby_powder/60 text-baby_powder hover:bg-baby_powder/30'
+                              }`}
+                          >
+                            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                            Watch the kickoff video
+                          </a>
+                        )}
                       </motion.div>
+
+                      {/* Both photos open the close-up view; hovering straightens one and lifts it in front.
+                          `front` picks which of the two sits on top, so an entry can lead with its better shot. */}
+                      <div className="relative flex-shrink-0 w-full h-40 md:w-80 md:h-52">
+                        {involvementItems[selectedInvolvement].photos.map((photo, p) => (
+                          <motion.img
+                            key={photo}
+                            src={photo}
+                            alt={`${involvementItems[selectedInvolvement].title} photo ${p + 1}`}
+                            onClick={(e) => { e.stopPropagation(); setLightboxPhoto(photo); }}
+                            initial={{ opacity: 0, y: 10, rotate: p === 0 ? -5 : 4 }}
+                            animate={{ opacity: 1, y: 0, rotate: p === 0 ? -5 : 4 }}
+                            whileHover={{ scale: 1.06, rotate: 0, zIndex: 20 }}
+                            transition={{ duration: 0.3, delay: 0.2 + p * 0.1 }}
+                            style={{ zIndex: p === (involvementItems[selectedInvolvement].front ?? 1) ? 2 : 1 }}
+                            className={`absolute w-[62%] aspect-[3/2] rounded-lg object-cover object-top border-2 cursor-pointer shadow-[0_10px_24px_-12px_rgba(0,0,0,0.7)]
+                              ${p === 0 ? 'left-0 top-0' : 'left-[30%] top-[18%] md:left-[34%] md:top-[30%]'}
+                              ${isDark ? 'border-mint_green/40' : 'border-baby_powder/70'}`}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -876,7 +893,7 @@ export default function About() {
               <AnimatePresence>
                 {selectedInvolvement !== null && (
                   <motion.button
-                    onClick={() => setSelectedInvolvement(null)}
+                    onClick={() => { setSelectedInvolvement(null); setFlyingBubble(null); }}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
@@ -904,8 +921,9 @@ export default function About() {
             </h3>
           )}
 
-          {/* The interest deck's drawn card grows past the content box, so that tab can't clip. */}
-          <div key={activeTab} className={`flex-1 relative z-10 ${activeTab === 'interests' ? 'overflow-visible' : 'overflow-hidden'}`}>
+          {/* Tilted photos, the hover zoom and the interest deck's drawn card all grow past the content
+              box, so only the tabs whose cards slide sideways between pages still clip. */}
+          <div key={activeTab} className={`flex-1 relative z-10 ${activeTab === 'experience' || activeTab === 'projects' ? 'overflow-hidden' : 'overflow-visible'}`}>
             <AnimatePresence initial={false} mode="wait" custom={direction}>
               {renderContent()}
             </AnimatePresence>
