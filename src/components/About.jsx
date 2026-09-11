@@ -1,5 +1,5 @@
-import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, useReducedMotion } from 'framer-motion';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import headshot from '../images/headshot.png';
 import headshotDark from '../images/headshotDark.png';
@@ -46,6 +46,180 @@ function TypingPhrase() {
       {article}{' '}
       <span>{text}</span>.<span className="typing-cursor" aria-hidden="true">|</span>
     </>
+  );
+}
+
+// Each interest card gets its own shade so the spread reads as one deck with variation.
+const INTEREST_CARD_TONES = {
+  light: ['#7b2d26', '#5c1a1b', '#932f2a', '#431216', '#a3413a', '#6a1f2a', '#852821', '#3a0f12'],
+  dark: ['#171a1f', '#0d0e11', '#21242c', '#121317', '#1c1e24', '#0a0a0d', '#262a33', '#15171c'],
+};
+
+// Fixed per-card nudges so the spread looks hand-dealt rather than evenly fanned.
+const DECK_JITTER = [
+  { rotate: -1.5, y: 4 }, { rotate: 2, y: -3 }, { rotate: -0.5, y: 6 }, { rotate: 1.2, y: -2 },
+  { rotate: -1.8, y: 3 }, { rotate: 0.8, y: -4 }, { rotate: -1, y: 2 }, { rotate: 1.6, y: 5 },
+];
+
+function InterestDeck({ items, isDark }) {
+  const deckRef = useRef(null);
+  const [deckWidth, setDeckWidth] = useState(0);
+  const [drawn, setDrawn] = useState(null);
+  // A card sliding back into the spread. It rides above the deck to a spot just clear of the card on
+  // its right ('out'), takes its normal layer there where nothing overlaps it, then slides under that
+  // neighbour into its slot ('in'), so the layer change never shows as a jump.
+  const [returning, setReturning] = useState(null);
+  const [hovered, setHovered] = useState(null);
+  const reduceMotion = useReducedMotion();
+
+  useLayoutEffect(() => {
+    const el = deckRef.current;
+    // Measure before the first paint so the deck opens already spread; the observer tracks resizes after.
+    setDeckWidth(el.offsetWidth);
+    const observer = new ResizeObserver(([entry]) => setDeckWidth(entry.contentRect.width));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (drawn === null) return;
+    const onKeyDown = (e) => {
+      if (e.key !== 'Escape') return;
+      setReturning({ index: drawn, phase: 'out' });
+      setDrawn(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [drawn]);
+
+  const drawCard = (i) => {
+    if (drawn !== null && drawn !== i) setReturning({ index: drawn, phase: 'out' });
+    else setReturning((r) => (r && r.index === i ? null : r));
+    setDrawn(i);
+  };
+
+  const returnCard = () => {
+    if (drawn === null) return;
+    setReturning({ index: drawn, phase: 'out' });
+    setDrawn(null);
+  };
+
+  const isNarrow = deckWidth > 0 && deckWidth < 500;
+  // Phones get two spread rows of four; wider screens fan every card in one row.
+  const perRow = isNarrow ? 4 : items.length;
+  const rowCount = Math.ceil(items.length / perRow);
+  const rowMid = (perRow - 1) / 2;
+  const cardWidth = isNarrow ? 104 : 136;
+  // Phone cards run a little taller so their descriptions still fit the narrower width.
+  const cardHeight = Math.round(cardWidth * (isNarrow ? 1.32 : 1.2));
+  const rowGap = Math.round(cardHeight * 0.85);
+  const spread = Math.max(0, deckWidth / 2 - cardWidth / 2 - 4);
+  const tones = INTEREST_CARD_TONES[isDark ? 'dark' : 'light'];
+  const slotSpacing = perRow > 1 ? (2 * spread) / (perRow - 1) : 0;
+  // How far apart two cards in a row must sit before they stop overlapping; the tilt widens them a little.
+  const clearGap = cardWidth + Math.round(cardHeight * 0.12) + 12;
+  // Keeps a tucking card from sliding out past the edge of the deck.
+  const minX = -deckWidth / 2 + cardWidth / 2 - 10;
+
+  const restFor = (index) => {
+    const r = Math.floor(index / perRow);
+    const tt = ((index % perRow) - rowMid) / rowMid; // -1 at the left end of its row, 1 at the right
+    const jit = DECK_JITTER[index % DECK_JITTER.length];
+    return {
+      x: tt * spread,
+      // The -12 lifts the whole spread so the lowest, most tilted cards keep some bottom padding.
+      y: (r - (rowCount - 1) / 2) * rowGap + tt * tt * 10 + jit.y - 12,
+      rotate: tt * 9 + jit.rotate,
+      scale: 1,
+      row: r,
+    };
+  };
+
+  // Where a returning card waits while it takes its normal layer: left of its slot, clear of the next
+  // card along, and on phones lifted above the row underneath as well.
+  const tuckXFor = (index) => Math.max(restFor(index).x - Math.max(0, clearGap - slotSpacing), minX);
+  const tuckYFor = (index) => {
+    const r = restFor(index);
+    return r.y - (rowCount > 1 && r.row < rowCount - 1 ? cardHeight - rowGap + 16 : 6);
+  };
+
+  return (
+    <div ref={deckRef} className="relative h-[310px] md:h-full" onClick={returnCard}>
+      {items.map((item, i) => {
+        const rest = restFor(i);
+        const isDrawn = drawn === i;
+        const isReturning = returning !== null && returning.index === i;
+
+        // A card at the end of a row can't tuck far enough left, so the card on its right steps
+        // aside instead and the gap for the layer change is there either way.
+        const nudge = returning !== null && returning.phase === 'out' && i === returning.index + 1
+          && rest.row === restFor(returning.index).row
+          ? Math.max(0, clearGap - (rest.x - tuckXFor(returning.index)))
+          : 0;
+
+        let target = hovered === i && drawn === null && returning === null ? { ...rest, y: rest.y - 12 } : rest;
+        if (isDrawn) {
+          target = { x: 0, y: -10, rotate: 0, scale: isNarrow ? 1.45 : 1.3 };
+        } else if (isReturning) {
+          target = returning.phase === 'out' ? { ...rest, x: tuckXFor(i), y: tuckYFor(i) } : rest;
+        } else if (drawn !== null) {
+          // The rest of the deck shifts aside to make room for the drawn card.
+          target = { ...rest, x: rest.x + (i < drawn ? -16 : 16), y: rest.y + 10, scale: 0.95 };
+        } else if (nudge > 0) {
+          target = { ...rest, x: rest.x + nudge };
+        }
+
+        return (
+          <motion.button
+            key={item.title}
+            type="button"
+            aria-pressed={isDrawn}
+            onClick={(e) => { e.stopPropagation(); if (isDrawn) returnCard(); else drawCard(i); }}
+            onHoverStart={() => setHovered(i)}
+            onHoverEnd={() => setHovered((h) => (h === i ? null : h))}
+            // Hand over from riding above the deck to sliding into the slot as soon as the card is
+            // clear of its neighbour, rather than waiting for the spring to settle, so it never stops.
+            onUpdate={isReturning && returning.phase === 'out'
+              ? (latest) => {
+                  if (Math.abs(latest.x - tuckXFor(i)) < 10 && Math.abs((latest.scale ?? 1) - 1) < 0.04) {
+                    setReturning((r) => (r && r.index === i && r.phase === 'out' ? { index: i, phase: 'in' } : r));
+                  }
+                }
+              : undefined}
+            onAnimationComplete={isReturning
+              ? () => setReturning((r) => (r && r.index === i ? (r.phase === 'out' ? { index: i, phase: 'in' } : null) : r))
+              : undefined}
+            initial={false}
+            // Darken rather than fade the other cards, so the deck stays solid behind the drawn one.
+            animate={{ ...target, filter: drawn !== null && !isDrawn && !isReturning ? 'brightness(0.6) saturate(0.85)' : 'brightness(1) saturate(1)' }}
+            transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 240, damping: 24 }}
+            style={{
+              width: cardWidth,
+              height: cardHeight,
+              marginLeft: -cardWidth / 2,
+              marginTop: -cardHeight / 2,
+              zIndex: isDrawn ? 30 : isReturning && returning.phase === 'out' ? 25 : i,
+              backgroundColor: tones[i % tones.length],
+              // A starting value Framer can interpolate from; without it the first dim reads the filter as NaN.
+              filter: 'brightness(1) saturate(1)',
+            }}
+            className={`absolute left-1/2 top-1/2 flex flex-col overflow-hidden rounded-2xl text-left cursor-pointer outline-none
+              shadow-[0_12px_28px_-10px_rgba(0,0,0,0.55)] focus-visible:ring-2 ${isNarrow ? 'p-2.5' : 'p-3'}
+              ${isDark ? 'border border-mint_green/15 focus-visible:ring-mint_green' : 'border border-baby_powder/10 focus-visible:ring-baby_powder'}`}
+          >
+            <span className={`uppercase tracking-[0.18em] ${isNarrow ? 'text-[8px]' : 'text-[9px]'} ${isDark ? 'text-mint_green/55' : 'text-falu_red-900/80'}`}>
+              No. {String(i + 1).padStart(2, '0')}
+            </span>
+            <span className={`mt-1 font-semibold leading-tight ${isNarrow ? 'text-sm' : 'text-lg'} ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
+              {item.title}
+            </span>
+            <span className={`leading-snug ${isNarrow ? 'mt-1.5 text-[9.5px]' : 'mt-3 text-[11px]'} ${isDark ? 'text-mint_green/80' : 'text-baby_powder/85'}`}>
+              {item.description}
+            </span>
+          </motion.button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -142,7 +316,7 @@ export default function About() {
     { title: 'Calisthenics', description: 'Staying Active, Mobile, & Moving in the Gym.' },
   ];
 
-  const ITEMS_PER_PAGE = { experience: 2, projects: 2, involvement: 1, interests: 4 };
+  const ITEMS_PER_PAGE = { experience: 2, projects: 2, involvement: 1, interests: 8 };
 
   const paginate = (items, perPage) => {
     const result = [];
@@ -577,30 +751,16 @@ export default function About() {
       case 'interests':
         return (
           <motion.div
-            key={`interests-${page}`}
+            key="interests"
             custom={direction}
             variants={contentVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="h-full"
           >
-            <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-              {currentPageItems.map((item, i) => (
-                <div key={i} className={`p-4 rounded-lg transition-colors duration-300 min-h-[120px] flex flex-col justify-center
-                  ${isDark ? 'bg-dark-950 border border-mint_green/60' : 'bg-baby_powder/20 border border-falu_red/30'}`}>
-                  <h4 className={`font-semibold text-lg transition-colors duration-300
-                    ${isDark ? 'text-mint_green' : 'text-baby_powder'}`}>
-                    {item.title}
-                  </h4>
-                  <div className={`w-12 h-[1px] my-2 ${isDark ? 'bg-mint_green/40' : 'bg-baby_powder/40'}`} />
-                  <p className={`transition-colors duration-300
-                    ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                    {item.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <InterestDeck items={interestItems} isDark={isDark} />
           </motion.div>
         );
 
@@ -616,7 +776,7 @@ export default function About() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className={`max-w-6xl mx-auto rounded-3xl px-8 py-4 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative z-10 flex flex-col h-auto md:h-[350px]
+        className={`max-w-6xl mx-auto rounded-3xl px-5 md:px-8 py-4 shadow-2xl backdrop-blur-xl transition-colors duration-300 relative z-10 flex flex-col h-auto md:h-[350px]
           ${isDark
             ? 'bg-gradient-to-br from-dark-800/40 via-dark-900/30 to-dark-800/40 border border-mint_green/20 shadow-[0_8px_32px_0_rgba(245,240,225,0.1)]'
             : 'bg-gradient-to-br from-baby_powder/30 via-baby_powder/20 to-baby_powder/20 border border-falu_red/20 shadow-[0_8px_32px_0_rgba(123,45,38,0.15)]'
@@ -644,20 +804,23 @@ export default function About() {
           ))}
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-6 relative z-10 flex-shrink-0">
+        {/* Navigation Tabs: one compact segmented row on phones, separate pills from md up.
+            If a very narrow phone still can't fit it, the row scrolls sideways instead of wrapping. */}
+        <div className={`relative z-10 flex-shrink-0 mb-4 md:mb-6 flex flex-nowrap w-full overflow-x-auto rounded-xl border p-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+          md:w-auto md:flex-wrap md:justify-center md:gap-2 md:overflow-visible md:rounded-none md:border-0 md:p-0
+          ${isDark ? 'border-mint_green/40' : 'border-baby_powder/30'}`}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`relative overflow-hidden px-5 py-1.5 rounded-lg font-medium transition-all duration-300 transform hover:scale-105
+              className={`relative overflow-hidden flex-[1_0_auto] md:flex-none whitespace-nowrap px-1.5 sm:px-3 md:px-5 py-1.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all duration-300 transform md:hover:scale-105
                 ${activeTab === tab.id
                   ? isDark
-                    ? 'text-eerie_black shadow-lg border border-transparent'
-                    : 'text-falu_red shadow-lg border border-transparent'
+                    ? 'text-eerie_black md:shadow-lg border border-transparent'
+                    : 'text-falu_red md:shadow-lg border border-transparent'
                   : isDark
-                    ? 'text-mint_green hover:bg-mint_green/20 border border-mint_green/60'
-                    : 'text-baby_powder hover:bg-baby_powder/20 border border-baby_powder/30'
+                    ? 'text-mint_green hover:bg-mint_green/20 border border-transparent md:border-mint_green/60'
+                    : 'text-baby_powder hover:bg-baby_powder/20 border border-transparent md:border-baby_powder/30'
                 }`}
             >
               {activeTab === tab.id && (
@@ -741,7 +904,8 @@ export default function About() {
             </h3>
           )}
 
-          <div key={activeTab} className="flex-1 overflow-hidden relative z-10">
+          {/* The interest deck's drawn card grows past the content box, so that tab can't clip. */}
+          <div key={activeTab} className={`flex-1 relative z-10 ${activeTab === 'interests' ? 'overflow-visible' : 'overflow-hidden'}`}>
             <AnimatePresence initial={false} mode="wait" custom={direction}>
               {renderContent()}
             </AnimatePresence>
