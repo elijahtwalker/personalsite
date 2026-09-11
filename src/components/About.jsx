@@ -751,8 +751,8 @@ export default function About() {
                             whileHover={{ scale: 1.06, rotate: 0, zIndex: 20 }}
                             transition={{ duration: 0.3, delay: 0.2 + p * 0.1 }}
                             style={{ zIndex: p === (involvementItems[selectedInvolvement].front ?? 1) ? 2 : 1 }}
-                            className={`absolute w-[62%] aspect-[3/2] rounded-lg object-cover object-top border-2 cursor-pointer shadow-[0_10px_24px_-12px_rgba(0,0,0,0.7)]
-                              ${p === 0 ? 'left-0 top-0' : 'left-[30%] top-[18%] md:left-[34%] md:top-[30%]'}
+                            className={`absolute w-[54%] md:w-[62%] aspect-[3/2] rounded-lg object-cover object-top border-2 cursor-pointer shadow-[0_10px_24px_-12px_rgba(0,0,0,0.7)]
+                              ${p === 0 ? 'left-[8%] top-[7%] md:left-0 md:top-0' : 'left-[38%] top-[25%] md:left-[34%] md:top-[30%]'}
                               ${isDark ? 'border-mint_green/40' : 'border-baby_powder/70'}`}
                           />
                         ))}
