@@ -7,10 +7,10 @@ export default function Hero() {
   const { isDark } = useTheme();
 
   return (
-    <section id="home" className="relative h-screen overflow-hidden">
+    <section id="home" className="relative h-screen-safe overflow-hidden">
       
       {/* Main content - Name */}
-      <div className="absolute bottom-12 left-12 z-10">
+      <div className="absolute bottom-12 left-12 z-10 pb-safe-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

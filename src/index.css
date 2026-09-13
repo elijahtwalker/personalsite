@@ -39,6 +39,24 @@
   }
 }
 
+@layer utilities {
+  /* Full height that accounts for mobile browser toolbars.
+     iOS Safari treats 100vh as the height with the toolbars hidden, so on first load — when the
+     address bar and bottom bar are both showing — anything anchored to the bottom of a 100vh box sits
+     behind them. `svh` is the height with the toolbars visible, so content always fits, and it doesn't
+     reflow as the bars collapse on scroll the way `dvh` would. The plain vh line stays first as a
+     fallback for browsers that don't know the newer unit. */
+  .h-screen-safe {
+    height: 100vh;
+    height: 100svh;
+  }
+
+  /* Keeps content clear of the iPhone home indicator. */
+  .pb-safe-12 {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
 @layer components {
   .fade-in {
     @apply opacity-0 translate-y-4 animate-[fadeIn_0.5s_ease-out_forwards];

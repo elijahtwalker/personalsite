@@ -174,7 +174,7 @@ export default function Views() {
   const textColor = isDark ? 'text-mint_green' : 'text-baby_powder';
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
+    <div className="relative h-screen-safe w-screen overflow-hidden">
       {showFog && <VantaFog />}
       {/* The same cursor treatment as the rest of the site. */}
       <BubbleCursor />
