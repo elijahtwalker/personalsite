@@ -63,6 +63,11 @@ function shuffledOrder(count) {
 const groupQuaternion = new THREE.Quaternion();
 const billboardQuaternion = new THREE.Quaternion();
 
+// The gap between a tile's edge and its hover ring, in world units. A fixed margin rather than a
+// percentage: tiles are 16:9, so scaling by a single factor would leave a wider gap at the sides than
+// above and below. Adding the same distance to each dimension keeps the border even all the way round.
+const OUTLINE_MARGIN = 0.022;
+
 export default function ShapeGallery({
   items,
   shapeId,
@@ -151,6 +156,32 @@ export default function ShapeGallery({
       };
     });
 
+    // Hit-testing targets. Kept separate from the group's children so the hover ring, which is added
+    // to the same group below, can never be raycast against.
+    const tileMeshes = tiles.map((tile) => tile.mesh);
+
+    // One ring, moved to whichever tile is hovered, rather than one per tile. Drawn as a closed line
+    // rather than a textured plane: a real rectangle outline keeps the corners square and the stroke
+    // a crisp single pixel at any distance, with no blur or softening.
+    const halfW = TILE_WIDTH / 2 + OUTLINE_MARGIN;
+    const halfH = TILE_HEIGHT / 2 + OUTLINE_MARGIN;
+    const outlineGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-halfW, -halfH, 0),
+      new THREE.Vector3(halfW, -halfH, 0),
+      new THREE.Vector3(halfW, halfH, 0),
+      new THREE.Vector3(-halfW, halfH, 0),
+    ]);
+    const outlineMaterial = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    });
+    const outline = new THREE.LineLoop(outlineGeometry, outlineMaterial);
+    outline.visible = false;
+    outline.renderOrder = 2;
+    group.add(outline);
+
     const state = {
       renderer,
       scene,
@@ -158,6 +189,7 @@ export default function ShapeGallery({
       group,
       geometry,
       tiles,
+      outline,
       shape: getShape(shapeId),
       aspect: 1.6,
       fit: 1,
@@ -419,7 +451,9 @@ export default function ShapeGallery({
       let hovered = -1;
       if (state.pointerActive && !state.dragging) {
         state.raycaster.setFromCamera(state.pointer, camera);
-        const hit = state.raycaster.intersectObjects(group.children, false)[0];
+        // Only the tiles are hit-tested. The hover ring is a child of the same group and sits in front
+        // of whatever it frames, so including it would let it steal its own hover and flicker.
+        const hit = state.raycaster.intersectObjects(tileMeshes, false)[0];
         if (hit) hovered = hit.object.userData.index;
       }
       if (hovered !== state.hovered) {
@@ -461,6 +495,18 @@ export default function ShapeGallery({
         }
         tile.mesh.renderOrder = tile.index === state.hovered ? 1 : 0;
       });
+
+      // Park the ring on the hovered tile and fade it in; fade it out when nothing is hovered.
+      const hoveredTile = state.hovered >= 0 ? tiles[state.hovered] : null;
+      if (hoveredTile) {
+        outline.position.copy(hoveredTile.mesh.position);
+        outline.quaternion.copy(hoveredTile.mesh.quaternion);
+        outline.scale.setScalar(hoveredTile.scale);
+        outline.visible = true;
+      }
+      const outlineTarget = hoveredTile ? 1 : 0;
+      outlineMaterial.opacity += (outlineTarget - outlineMaterial.opacity) * Math.min(1, delta * 10);
+      if (!hoveredTile && outlineMaterial.opacity < 0.01) outline.visible = false;
 
       renderer.render(scene, camera);
       requestAnimationFrame(frame);
@@ -549,7 +595,9 @@ export default function ShapeGallery({
       if (state.dragMoved > DRAG_THRESHOLD) return;
       toPointer(event);
       state.raycaster.setFromCamera(state.pointer, camera);
-      const hit = state.raycaster.intersectObjects(group.children, false)[0];
+      // Tiles only, for the same reason as the hover test: the ring sits in front of the tile it
+      // frames, and it carries no index, so a click landing on it would open nothing.
+      const hit = state.raycaster.intersectObjects(tileMeshes, false)[0];
       if (hit) callbacksRef.current.onSelect?.(hit.object.userData.index);
     }
 
@@ -576,6 +624,8 @@ export default function ShapeGallery({
         tile.mesh.material.dispose();
       });
       geometry.dispose();
+      outlineGeometry.dispose();
+      outlineMaterial.dispose();
       renderer.dispose();
       if (renderer.domElement.parentNode === mount) mount.removeChild(renderer.domElement);
       sceneRef.current = null;
