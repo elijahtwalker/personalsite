@@ -158,7 +158,8 @@ function murmuration(count, { radius }) {
 export const SHAPES = [
   {
     id: 'grid',
-    label: 'grid',
+    // Labels are deliberately of a similar length so the switcher doesn't change width as it steps.
+    label: 'rectilinear',
     build: grid,
     idle: { amplitude: 0.04, speed: 0.12, spin: 0, swirl: 0 },
     tilt: { x: 0, y: 0 },
@@ -168,7 +169,7 @@ export const SHAPES = [
   },
   {
     id: 'blob',
-    label: 'blob',
+    label: 'conglomerate',
     build: blob,
     idle: { amplitude: 0.18, speed: 0.2, spin: 0.05, swirl: 0 },
     tilt: { x: 0, y: 0 },
@@ -181,7 +182,7 @@ export const SHAPES = [
   },
   {
     id: 'wave',
-    label: 'wave',
+    label: 'undulation',
     build: waveField,
     idle: { amplitude: 0.22, speed: 0.3, spin: 0, swirl: 0 },
     // Faces the viewer: the swell is built into the layout, so no tilt is needed.
@@ -192,7 +193,7 @@ export const SHAPES = [
   },
   {
     id: 'sunflower',
-    label: 'sunflower',
+    label: 'phyllotaxis',
     build: sunflower,
     idle: { amplitude: 0.07, speed: 0.16, spin: 0, swirl: 0.05 },
     tilt: { x: 0, y: 0 },

@@ -5,6 +5,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useTheme } from '../context/ThemeContext';
 import VantaFog from '../components/VantaFog';
 import ThemeToggle from '../components/ThemeToggle';
+import BubbleCursor from '../components/BubbleCursor';
 import ShapeGallery from '../components/ShapeGallery';
 import { SHAPES, DEFAULT_SHAPE } from '../lib/shapes';
 import { createPlaceholderItems } from '../lib/placeholderTiles';
@@ -16,48 +17,87 @@ import { createVideoItems } from '../lib/videos';
 // Cloudinary builds the optimised version on first request and answers 423 while it does, so a first
 // view of a clip can fail once and succeed a moment later. Rather than showing a broken player, this
 // retries a few times behind the poster.
-function ClipPlayer({ item }) {
+// Measured against this library: a clip Cloudinary hasn't built yet took anywhere from 1 to 18
+// seconds to become available. Retrying a handful of times over ~6 seconds gave up before the slower
+// ones were ready, which is what made clips seem to need several attempts or never load at all.
+const MAX_PREPARE_WAIT_MS = 60000;
+const RETRY_INTERVAL_MS = 1500;
+
+function ClipPlayer({ item, onStatusChange }) {
   const [attempt, setAttempt] = useState(0);
   const [status, setStatus] = useState('loading');
+  // Controls stay hidden while a clip plays, so nothing overlays the footage. They appear once it
+  // ends, where they're useful for replaying or scrubbing back.
+  const [ended, setEnded] = useState(false);
+  const videoRef = useRef(null);
   const retryTimer = useRef(null);
+  const startedAt = useRef(Date.now());
 
   useEffect(() => {
     setAttempt(0);
     setStatus('loading');
+    setEnded(false);
+    startedAt.current = Date.now();
     return () => clearTimeout(retryTimer.current);
   }, [item.id]);
 
+  // With the control bar hidden there's no pause button, so the frame itself toggles playback.
+  const togglePlayback = (event) => {
+    event.stopPropagation();
+    const video = videoRef.current;
+    if (!video || ended) return;
+    if (video.paused) video.play(); else video.pause();
+  };
+
+  // The indicator lives above the video, so the player reports upward rather than drawing it itself.
+  useEffect(() => {
+    onStatusChange?.(status);
+  }, [status, onStatusChange]);
+
   const onError = () => {
-    if (attempt >= 4) {
+    // Keep trying for as long as a first-time transcode plausibly takes, rather than a fixed few goes.
+    if (Date.now() - startedAt.current > MAX_PREPARE_WAIT_MS) {
       setStatus('failed');
       return;
     }
     setStatus('preparing');
-    retryTimer.current = setTimeout(() => setAttempt((value) => value + 1), 1600);
+    retryTimer.current = setTimeout(() => setAttempt((value) => value + 1), RETRY_INTERVAL_MS);
   };
 
   return (
     <div className="relative h-full w-full bg-black">
       <video
+        ref={videoRef}
         key={`${item.id}-${attempt}`}
         src={item.video}
         poster={item.largePoster}
         className="h-full w-full object-contain"
-        controls
+        controls={ended}
         autoPlay
         playsInline
         preload="none"
+        onClick={togglePlayback}
         onPlaying={() => setStatus('playing')}
+        onEnded={() => setEnded(true)}
         onError={onError}
       />
-      {status !== 'playing' && (
-        <div className="pointer-events-none absolute inset-0 flex items-end justify-center pb-6">
-          <span className="rounded-md bg-black/60 px-2.5 py-1 text-xs text-baby_powder">
-            {status === 'failed' ? 'could not load this clip' : 'preparing clip…'}
-          </span>
-        </div>
-      )}
     </div>
+  );
+}
+
+// Three pulsing dots, shown while a clip is still being fetched or prepared.
+function LoadingDots() {
+  return (
+    <span className="flex items-center gap-1.5" role="status" aria-label="Loading clip">
+      {[0, 1, 2].map((index) => (
+        <motion.span
+          key={index}
+          className="h-1.5 w-1.5 rounded-full bg-baby_powder"
+          animate={{ opacity: [0.2, 1, 0.2] }}
+          transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut', delay: index * 0.18 }}
+        />
+      ))}
+    </span>
   );
 }
 
@@ -68,6 +108,8 @@ export default function Views() {
   const navigate = useNavigate();
   const [shapeId, setShapeId] = useState(DEFAULT_SHAPE);
   const [selected, setSelected] = useState(null);
+  // Reported upward by the player, so the dots above the clip know when to show.
+  const [clipStatus, setClipStatus] = useState('loading');
   const [reducedMotion, setReducedMotion] = useState(false);
   // Phones run the fog and the gallery on separate WebGL contexts, which is more than most handsets
   // want to do at once, so the fog steps aside there and the flat theme colour backs the gallery.
@@ -94,6 +136,11 @@ export default function Views() {
       smallQuery.removeEventListener('change', sync);
     };
   }, []);
+
+  // Every newly opened clip starts out loading again, otherwise the dots stay hidden after the first.
+  useEffect(() => {
+    if (selected !== null) setClipStatus('loading');
+  }, [selected]);
 
   useEffect(() => {
     if (selected === null) return undefined;
@@ -125,11 +172,12 @@ export default function Views() {
   const selectedItem = selected !== null ? items[selected] : null;
 
   const textColor = isDark ? 'text-mint_green' : 'text-baby_powder';
-  const mutedColor = isDark ? 'text-mint_green/60' : 'text-baby_powder/70';
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       {showFog && <VantaFog />}
+      {/* The same cursor treatment as the rest of the site. */}
+      <BubbleCursor />
 
       <div className="absolute inset-0 z-10">
         <ShapeGallery
@@ -157,13 +205,13 @@ export default function Views() {
         />
       </motion.button>
 
-      {/* Shape switcher. Arrows step through; the names are all clickable for jumping straight there. */}
-      <div className="absolute bottom-6 left-6 z-20 flex items-center gap-3">
+      {/* Shape switcher: the arrows either side are the only way to change shape. */}
+      <div className="absolute bottom-6 left-6 z-20 flex items-center gap-1">
         <button
           type="button"
           aria-label="Previous shape"
           onClick={() => step(-1)}
-          className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300
+          className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors duration-300
             ${isDark ? 'text-mint_green hover:bg-mint_green/10' : 'text-baby_powder hover:bg-baby_powder/10'}`}
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -171,8 +219,12 @@ export default function Views() {
           </svg>
         </button>
 
-        {/* Just the current shape's name: the arrows either side are the only way to change it. */}
-        <span className={`min-w-[6.5rem] text-center text-sm md:text-base transition-colors duration-300 ${textColor}`}>
+        {/* Sized to the longest shape name, so the arrows hold still as the name changes without
+            leaving a wide gap around the short ones. */}
+        <span
+          style={{ minWidth: `${Math.max(...SHAPES.map((shape) => shape.label.length))}ch` }}
+          className={`text-center text-sm md:text-base transition-colors duration-300 ${textColor}`}
+        >
           {SHAPES[shapeIndex]?.label}
         </span>
 
@@ -180,23 +232,13 @@ export default function Views() {
           type="button"
           aria-label="Next shape"
           onClick={() => step(1)}
-          className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300
+          className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors duration-300
             ${isDark ? 'text-mint_green hover:bg-mint_green/10' : 'text-baby_powder hover:bg-baby_powder/10'}`}
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
-      </div>
-
-      <div className={`absolute bottom-6 right-6 z-20 flex items-center gap-4 text-xs md:text-sm ${mutedColor}`}>
-        {/* The controls change per shape, so the hint does too. */}
-        <span className="hidden sm:inline">
-          {SHAPES.find((shape) => shape.id === shapeId)?.nav === 'pan'
-            ? 'drag or scroll to move · click to open'
-            : 'drag to turn · scroll to zoom · click to open'}
-        </span>
-        <span>{items.length} clips</span>
       </div>
 
       {/* Opened tile. The real version plays the Cloudinary video here with sound and controls; for now
@@ -220,9 +262,17 @@ export default function Views() {
               onClick={(e) => e.stopPropagation()}
               className="w-[86vw] max-w-3xl cursor-default"
             >
+              {/* Loading state sits above the clip, opposite the caption underneath it. */}
+              <div className="mb-2 flex h-4 items-center justify-end">
+                {clipStatus === 'failed' ? (
+                  <span className="text-xs text-baby_powder/70">could not load this clip</span>
+                ) : (
+                  clipStatus !== 'playing' && <LoadingDots />
+                )}
+              </div>
               <div className="aspect-video w-full overflow-hidden rounded-xl shadow-2xl">
                 {selectedItem.video ? (
-                  <ClipPlayer item={selectedItem} />
+                  <ClipPlayer item={selectedItem} onStatusChange={setClipStatus} />
                 ) : (
                   <img
                     src={typeof selectedItem.poster === 'string'
@@ -233,15 +283,8 @@ export default function Views() {
                   />
                 )}
               </div>
-              <div className="mt-3 flex items-center justify-between">
+              <div className="mt-3">
                 <span className="text-sm text-baby_powder">{selectedItem.title}</span>
-                <button
-                  type="button"
-                  onClick={() => setSelected(null)}
-                  className="text-xs text-baby_powder/70 hover:text-baby_powder transition-colors duration-200"
-                >
-                  close (esc)
-                </button>
               </div>
             </motion.div>
           </motion.div>

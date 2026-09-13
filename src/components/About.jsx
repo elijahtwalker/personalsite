@@ -1,5 +1,6 @@
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, useReducedMotion } from 'framer-motion';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import headshot from '../images/headshot.png';
 import headshotDark from '../images/headshotDark.png';
@@ -229,6 +230,7 @@ function InterestDeck({ items, isDark }) {
 
 export default function About() {
   const { isDark } = useTheme();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('about');
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -282,6 +284,21 @@ export default function About() {
   const handlePhotoMouseLeave = () => {
     mouseX.set(0.5);
     mouseY.set(0.5);
+  };
+
+  // Double click the headshot to reach the video gallery. The browser only emits `dblclick` when two
+  // clicks land close together on the same element, and the photo sits inside a tilting 3D wrapper
+  // that can take the hit instead — so this also counts the clicks itself as a fallback.
+  const lastPhotoClick = useRef(0);
+  const openViews = () => navigate('/views');
+  const handlePhotoClick = () => {
+    const now = Date.now();
+    if (now - lastPhotoClick.current < 400) {
+      lastPhotoClick.current = 0;
+      openViews();
+      return;
+    }
+    lastPhotoClick.current = now;
   };
 
   const tabs = [
@@ -431,10 +448,14 @@ export default function About() {
                   style={{ rotateX, rotateY }}
                   onMouseMove={handlePhotoMouseMove}
                   onMouseLeave={handlePhotoMouseLeave}
+                  onClick={handlePhotoClick}
+                  onDoubleClick={openViews}
                 >
                   <img
                     src={isDark ? headshotDark : headshot}
                     alt="Elijah Walker"
+                    // The wrapper carries the click handlers; clicks bubble up to it from here, so
+                    // putting them on the image too would count every click twice.
                     className="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover object-top shadow-lg border-4 transition-all duration-300 hover:scale-105"
                     style={{
                       borderColor: isDark ? 'rgba(245, 240, 225, 0.5)' : '#7b2d26'

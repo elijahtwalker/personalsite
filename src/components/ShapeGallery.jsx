@@ -596,7 +596,9 @@ export default function ShapeGallery({
   return (
     <div
       ref={mountRef}
-      className="absolute inset-0 cursor-grab active:cursor-grabbing touch-none"
+      // No grab cursor: BubbleCursor hides the native pointer site-wide, so cursor styles here would
+      // never be seen.
+      className="absolute inset-0 touch-none"
       aria-label="Video gallery"
     />
   );
