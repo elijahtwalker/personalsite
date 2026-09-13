@@ -50,6 +50,39 @@ function TypingPhrase() {
   );
 }
 
+// Site names that appear in the involvement copy become links. Keeping the copy itself plain text
+// means the wording stays readable in the data, and adding another site later is one line here.
+const INVOLVEMENT_LINKS = {
+  'acmutd.co': 'https://acmutd.co',
+  'hackutd.co': 'https://hackutd.co',
+};
+
+const INVOLVEMENT_LINK_PATTERN = new RegExp(
+  `(${Object.keys(INVOLVEMENT_LINKS).map((name) => name.replace(/\./g, '\\.')).join('|')})`,
+  'g',
+);
+
+// Splits body copy on those names and returns the pieces with the matches wrapped in links, styled to
+// match the company links on the experience cards.
+function withLinks(text) {
+  return text.split(INVOLVEMENT_LINK_PATTERN).map((part, index) => {
+    const href = INVOLVEMENT_LINKS[part];
+    if (!href) return part;
+    return (
+      <a
+        key={`${part}-${index}`}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="underline decoration-dotted underline-offset-2 hover:decoration-solid"
+      >
+        {part}
+      </a>
+    );
+  });
+}
+
 // Paste the hosted kickoff video's URL here once it is uploaded; the button on the ACM entry
 // appears only when this is set, so an empty value simply hides it.
 const ACM_KICKOFF_VIDEO_URL = '';
@@ -333,7 +366,7 @@ export default function About() {
       subtitle: 'ACM @ UTD • Dec 2024 - Present',
       icon: '/images/ACMLogoWhite.png',
       bullets: [
-        'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 2 consecutive international awards, and 190+ officers at the forefront of innovation and intellectual curiosity.'
+        'Leading the largest computer science organization at UT Dallas with 800+ members, 8 uniquely talented divisions, 3 consecutive international awards, and 200+ officers at the forefront of innovation and intellectual curiosity. Find us at acmutd.co and hackutd.co, building a radiant future for the brightest students.'
       ],
       photos: ['/images/acmpres.JPG', '/images/acmpres2.jpg'],
       video: ACM_KICKOFF_VIDEO_URL,
@@ -343,7 +376,7 @@ export default function About() {
       subtitle: 'AKPsi Mu Rho • May 2025 - Dec 2025',
       icon: '/images/akpsi.png',
       bullets: [
-        'Led the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 140+ members. Spearheaded the rush process with 8 events and 300+ participants.'
+        'Orchestrated the pledge process of the largest and most premier co-ed business fraternity at UT Dallas with 150+ members. Spearheaded the rush process with 8 events and 300+ participants. Spent 10 weeks developing undergraduates in the fields of professional excellence, technical skill-building, and fostering a long-lasting community.'
       ],
       photos: ['/images/vpm.JPEG', '/images/vpm2.jpg'],
       front: 0,
@@ -353,7 +386,7 @@ export default function About() {
       subtitle: 'ACM @ UTD • May 2024 - Dec 2024',
       icon: '/images/ResearchWhite.png',
       bullets: [
-        'Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions.'
+        'Coached 8 uniquely skilled research team leads while guiding almost 40 program participants through engaging workshops, socials, and research project development sessions. Our work spanned many fields, some including neural network studies for epilepsy patients and social presence for conversations with virtual agents.'
       ],
       photos: ['/images/research.JPG', '/images/research2.jpg'],
       front: 0,
@@ -736,7 +769,7 @@ export default function About() {
                         </p>
                         <p className={`text-xs md:text-base leading-relaxed transition-colors duration-300
                           ${isDark ? 'text-mint_green/95' : 'text-baby_powder'}`}>
-                          {involvementItems[selectedInvolvement].bullets[0]}
+                          {withLinks(involvementItems[selectedInvolvement].bullets[0])}
                         </p>
                         {involvementItems[selectedInvolvement].video && (
                           <a
