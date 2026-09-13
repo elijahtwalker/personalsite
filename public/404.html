@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Elijah Walker</title>
+    <script>
+      // GitHub Pages serves this file for any path it doesn't recognise, including client-side routes
+      // like /views. Rewriting the URL and handing control back to index.html keeps the address bar
+      // correct, so a direct visit or a refresh lands on the right page instead of a 404.
+      sessionStorage.setItem('redirectPath', window.location.pathname + window.location.search + window.location.hash);
+      window.location.replace('/');
+    </script>
+  </head>
+  <body></body>
+</html>
